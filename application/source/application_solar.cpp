@@ -90,10 +90,15 @@ Scenegraph ApplicationSolar::initializeScenegraph(model const& planet_model) {
   return init_Scene;
 }
 
-void ApplicationSolar::addPlanet(Scenegraph& Scenegraph, std::string planet_name, model const& planet_model) {
+void ApplicationSolar::addPlanet(Scenegraph& Scenegraph, std::string const& planet_name, model const& planet_model) {
   GeometryNode planet{planet_name};
   planet.setGeometry(planet_model);
   Scenegraph.getRoot()->addChild(std::make_shared<GeometryNode>(planet));
+}
+
+void addMoon(Scenegraph& Scenegraph, std::string const& planet_name, std::string const& moon_name) {
+  GeometryNode moon{moon_name};
+  Scenegraph.getRoot()->getChildren(planet_name)->addChild(std::make_shared<GeometryNode>(moon));
 }
 
 ///////////////////////////// intialisation functions /////////////////////////

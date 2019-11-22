@@ -34,7 +34,9 @@ class ApplicationSolar : public Application {
 
   Scenegraph initializeScenegraph(model const& planet_model);
   //add Planet to Scenegraph
-  void addPlanet(Scenegraph& Scenegraph, std::string planet_name, model const& planet_model);
+  void addPlanet(Scenegraph& Scenegraph, std::string const& planet_name, model const& planet_model);
+  //to add moon/s to a planet
+  void addMoon(Scenegraph& Scenegraph, std::string const& planet_name, std::string const& moon_name);
 
   // upload projection matrix
   void uploadProjection();
