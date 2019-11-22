@@ -79,6 +79,12 @@ void ApplicationSolar::uploadUniforms() {
   uploadProjection();
 }
 
+void ApplicationSolar::initializeScenegraph() const {
+  
+
+
+}
+
 ///////////////////////////// intialisation functions /////////////////////////
 // load shader sources
 void ApplicationSolar::initializeShaderPrograms() {
@@ -146,6 +152,7 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 //handle delta mouse movement input
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   // mouse handling
+  
 }
 
 //handle resizing

@@ -15,8 +15,9 @@ std::shared_ptr<Node> Node::getParent() const {
 }
 
 std::shared_ptr<Node> Node::getChildren(std::string childName) const {
-    auto i = std::find_if(children_.begin(), children_.end(), [&childName] std::shared_ptr<Node> node) {
-        return node->getName(); }
+    auto i = std::find_if(children_.begin(), children_.end(), 
+        [&childName]( std::shared_ptr<Node> node) {
+        return node->getName() == childName; });
     if(i != children_.end()) {
         return *i;
     } else {

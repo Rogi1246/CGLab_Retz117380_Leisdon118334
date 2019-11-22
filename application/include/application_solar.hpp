@@ -28,6 +28,9 @@ class ApplicationSolar : public Application {
   void initializeGeometry();
   // update uniform values
   void uploadUniforms();
+
+  void initializeScenegraph() const;
+
   // upload projection matrix
   void uploadProjection();
   // upload view matrix
