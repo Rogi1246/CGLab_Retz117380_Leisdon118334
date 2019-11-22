@@ -6,7 +6,7 @@
 class CameraNode {
 
     public:
-        CameraNode(bool isPerspective, bool isEnabled, glm::mat4 projectionMatrix);
+        CameraNode(std::string const& name, std::shared_ptr<Node> parent);
         bool getPerspective();
         bool getEnabled();
         void setEnabled(bool isEnabled);
@@ -16,7 +16,7 @@ class CameraNode {
 
     private:
         bool isPerspective_;
-        bool isEnables_;
+        bool isEnabled_;
         glm::mat4 projectionMatrix_;
 
 
