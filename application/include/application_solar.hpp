@@ -4,6 +4,9 @@
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
+#include "node.hpp"
+#include "scenegraph.hpp"
+#include "geometry_node.hpp"
 
 // gpu representation of model
 class ApplicationSolar : public Application {
@@ -29,7 +32,9 @@ class ApplicationSolar : public Application {
   // update uniform values
   void uploadUniforms();
 
-  void initializeScenegraph() const;
+  Scenegraph initializeScenegraph(model const& planet_model);
+  //add Planet to Scenegraph
+  void addPlanet(Scenegraph& Scenegraph, std::string planet_name, model const& planet_model);
 
   // upload projection matrix
   void uploadProjection();

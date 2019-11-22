@@ -79,10 +79,21 @@ void ApplicationSolar::uploadUniforms() {
   uploadProjection();
 }
 
-void ApplicationSolar::initializeScenegraph() const {
-  
+Scenegraph ApplicationSolar::initializeScenegraph(model const& planet_model) {
+  //create root-node and initial Scenegraph
+  Node root_Node{"root", nullptr};
+  Scenegraph init_Scene{"init_Scene", std::make_shared<Node>(root_Node)};
+  //creating planets
+  addPlanet(init_Scene, "Earth", planet_model);
+  addPlanet(init_Scene, "Venus", planet_model);
 
+  return init_Scene;
+}
 
+void ApplicationSolar::addPlanet(Scenegraph& Scenegraph, std::string planet_name, model const& planet_model) {
+  GeometryNode planet{planet_name};
+  planet.setGeometry(planet_model);
+  Scenegraph.getRoot()->addChild(std::make_shared<GeometryNode>(planet));
 }
 
 ///////////////////////////// intialisation functions /////////////////////////
