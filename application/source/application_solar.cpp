@@ -91,8 +91,18 @@ Scenegraph ApplicationSolar::initializeScenegraph(model const& planet_model) {
 }
 
 void ApplicationSolar::addPlanet(Scenegraph& Scenegraph, std::string const& planet_name, model const& planet_model) {
+  glm::mat4 local= glm::mat4{};
   GeometryNode planet{planet_name};
-  planet.setGeometry(planet_model);
+  if(planet.getName() == "Earth") {
+    planet = {"Earth", 1, 1.0f, 1.0f, 5.0f, 1.0f};
+    planet.setLocalTransform(local);
+  }
+
+  if(planet.getName() == "Venus") {
+    planet = {"Venus", 1, 0.950f, 1.177f, 3.723f, 1.0f};
+    planet.setLocalTransform(local);
+  }
+  //planet.setGeometry(planet_model);
   Scenegraph.getRoot()->addChild(std::make_shared<GeometryNode>(planet));
 }
 
@@ -150,6 +160,8 @@ void ApplicationSolar::initializeGeometry() {
   planet_object.draw_mode = GL_TRIANGLES;
   // transfer number of indices to model object 
   planet_object.num_elements = GLsizei(planet_model.indices.size());
+
+  initializeScenegraph(planet_model);
 }
 
 ///////////////////////////// callback functions for window events ////////////

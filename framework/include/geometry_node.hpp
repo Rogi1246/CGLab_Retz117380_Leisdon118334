@@ -8,13 +8,20 @@
 class GeometryNode : public Node {
 
     public:
-        GeometryNode(std::string const& name);
+        GeometryNode(std::string name);
+        GeometryNode(std::string name, int depth, float diameter, float rotation_sp, float dist, float rotation_self );
         model getGeometry() const;
         void setGeometry(model geometryModel);
         
 
     private:
         model geometryModel_;
+        std::string name_;
+        int depth_;
+        float diameter_;
+        float rotation_sp_;
+        float distance_;
+        float rotation_self_;
 
 
 };

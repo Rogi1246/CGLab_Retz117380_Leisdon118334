@@ -3,11 +3,11 @@
 
 Scenegraph::Scenegraph():
     name_{},
-    root_{}{}
+    root_{} {}
 
 Scenegraph::Scenegraph(std::string name, std::shared_ptr<Node> root):
     name_{name},
-    root_{root}{}
+    root_{root} {}
 
 std::string Scenegraph::getName() const{
     return name_;
