@@ -18,6 +18,8 @@ using namespace gl;
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include "geometry_node.hpp"
+
 
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
@@ -27,6 +29,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
 {
   initializeGeometry();
   initializeShaderPrograms();
+  // initializeSceneGraph();
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -55,6 +58,7 @@ void ApplicationSolar::render() const {
   // draw bound vertex array using bound shader
   glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 }
+
 
 void ApplicationSolar::uploadView() {
   // vertices are transformed in camera space, so camera transform must be inverted
@@ -180,6 +184,9 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 //handle delta mouse movement input
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   // mouse handling
+
+  float angle = 0.03f;
+  m_view_transform = glm::rotate(m_view_transform, angle, glm::vec3{-pos_y, -pos_x, 0.0f});
   
 }
 
