@@ -113,6 +113,14 @@ void ApplicationSolar::initializeScenegraph() {
   earth.setDistance(3.5f);
   earth.setSize(0.17f);
 
+  GeometryNode moon("Moon");
+  moon.setGeometry(planet_model);
+  moon.setRotationSpeed(2.9f);
+  moon.setDistance(0.4f);
+  moon.setSize(0.05f);
+
+  earth.addChild(std::make_shared<GeometryNode>(moon));
+
   GeometryNode mars("Mars");
   mars.setGeometry(planet_model);
   mars.setRotationSpeed(2.4f);
@@ -161,16 +169,9 @@ void ApplicationSolar::initializeScenegraph() {
 
   Scenegraph init_Scene{"init_Scene", std::make_shared<GeometryNode>(sun)};
   scenegraph_ = init_Scene;
-  //scenegraph_.getRoot()->addChild(std::make_shared<GeometryNode>(mercury));
-  //scenegraph_.getRoot()->addChild(std::make_shared<GeometryNode>(pluto));
 }
 
-void ApplicationSolar::addPlanet(std::string const& planet_name, model const& planet_model) {
-  glm::mat4 local= glm::mat4{};
-  //GeometryNode planet{planet_name};
-  //planet.setGeometry(planet_model);
-  //scenegraph_.getRoot()->addChild(std::make_shared<GeometryNode>(planet));
-}
+
 
 void addMoon(std::string const& planet_name, std::string const& moon_name) {
   GeometryNode moon{moon_name};
@@ -179,11 +180,16 @@ void addMoon(std::string const& planet_name, std::string const& moon_name) {
 
 void ApplicationSolar::renderPlanets() const {
 
+
+  auto sun = scenegraph_.getRoot();
   glm::mat4 sunMatrix = glm::mat4{};
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
-                       1, GL_FALSE, glm::value_ptr(sunMatrix));
+  //sunMatrix = glm::rotate(sunMatrix, float(glfwGetTime()) * sun->getRotationSpeed(), glm::vec3{0.0f, 0.0f, 0.0f}); 
+  //sunMatrix = glm::translate(sunMatrix, glm::vec3{0.0f, 0.0f, sun->getDistance()});
+  //sunMatrix = glm::scale(sunMatrix, glm::vec3(sun->getSize(), sun->getSize(), sun->getSize()));
+
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),1, GL_FALSE, glm::value_ptr(sunMatrix));
   glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*sunMatrix);
-    glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
   glBindVertexArray(planet_object.vertex_AO);
   glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
@@ -214,6 +220,26 @@ void ApplicationSolar::renderPlanets() const {
     // draw bound vertex array using bound shader
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
+    //planet has moon
+    if(planetIterator->getChildList().size()>0){
+      for(auto& moonIterator: planetIterator->getChildList()){
+      glm::mat4 moonMatrix = planetIterator->getLocalTransform();
+      moonMatrix = glm::rotate(moonMatrix, float(glfwGetTime()) * planetIterator->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f});
+      moonMatrix = glm::translate(moonMatrix, glm::vec3{0.0f,0.0f,1.0f*planetIterator->getDistance()+0.2});
+      
+      moonMatrix = glm::rotate(moonMatrix,float(glfwGetTime()*moonIterator->getRotationSpeed()), glm::vec3{0.0f,1.0f,0.0f});
+      moonMatrix = glm::translate(moonMatrix, glm::vec3{0.0f, 0.0f, moonIterator->getDistance()});
+      moonMatrix = glm::scale(moonMatrix, glm::vec3(moonIterator->getSize(), moonIterator->getSize(), moonIterator->getSize()));
+      normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*moonMatrix);
+
+      glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),1, GL_FALSE, glm::value_ptr(moonMatrix));
+      glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*moonMatrix);
+      glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+      glBindVertexArray(planet_object.vertex_AO);
+      glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
+      }
+    }
 
   }
 }
@@ -309,9 +335,9 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   // mouse handling
 
-  float angle = 0.03f;
+  float angle = 0.01f;
   m_view_transform = glm::rotate(m_view_transform, angle, glm::vec3{-pos_y, -pos_x, 0.0f});
-  
+  uploadView();
 }
 
 //handle resizing
