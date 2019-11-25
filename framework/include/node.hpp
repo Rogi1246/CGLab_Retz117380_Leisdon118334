@@ -28,6 +28,8 @@ class Node{
         glm::mat4 getWorldTransform() const;
         float getRotationSpeed() const;
         float getDistance() const;
+        float getSize() const;
+
 
         //Setter
         void setParent(std::shared_ptr<Node> parent);
@@ -35,6 +37,8 @@ class Node{
         void setWorldTransform(glm::mat4 worldTrans);
         void setRotationSpeed(float rotation_sp);
         void setDistance(float distance);
+        void setSize(float size);
+
 
         //Adding and removing children
         void addChild(std::shared_ptr<Node> child);
@@ -50,6 +54,7 @@ class Node{
         glm::mat4 worldTransform_;
         float rotation_sp_;
         float distance_;
+        float size_;
 
 };
 #endif 

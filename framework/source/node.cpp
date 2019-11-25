@@ -58,6 +58,11 @@ float Node::getDistance() const {
     return distance_;
 }
 
+float Node::getSize() const {
+    return size_;
+}
+
+
 //Setter
 void Node::setParent(std::shared_ptr<Node> parent) {
     parent_ = parent;
@@ -77,6 +82,10 @@ void Node::setRotationSpeed(float rotation_sp) {
 
 void Node::setDistance(float distance) {
     distance_ = distance;
+}
+
+void Node::setSize(float size) {
+    size_ = size;
 }
 
 //Adding and removing children

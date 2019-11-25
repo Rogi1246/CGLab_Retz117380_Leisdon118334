@@ -40,23 +40,23 @@ ApplicationSolar::~ApplicationSolar() {
 
 void ApplicationSolar::render() const {
   // bind shader to upload uniforms
-  glUseProgram(m_shaders.at("planet").handle);
+  //glUseProgram(m_shaders.at("planet").handle);
 
-  glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-  model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
-                     1, GL_FALSE, glm::value_ptr(model_matrix));
+  //glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
+  //model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
+  //glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+  //                     1, GL_FALSE, glm::value_ptr(model_matrix));
 
   // extra matrix for normal transformation to keep them orthogonal to surface
-  glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
-                     1, GL_FALSE, glm::value_ptr(normal_matrix));
+  //glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
+  //glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+    //                 1, GL_FALSE, glm::value_ptr(normal_matrix));
 
   // bind the VAO to draw
-  glBindVertexArray(planet_object.vertex_AO);
+  //glBindVertexArray(planet_object.vertex_AO);
 
   // draw bound vertex array using bound shader
-  glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  //glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
   renderPlanets();
 }
@@ -90,18 +90,73 @@ void ApplicationSolar::initializeScenegraph() {
 
   //create root-node and initial Scenegraph
   GeometryNode sun{"Sun"};
+  sun.setGeometry(planet_model);
+  sun.setRotationSpeed(0.0f);
+  sun.setDistance(0.0f);
+  sun.setSize(1.0f);
   //creating planets
-  GeometryNode mercury("Mercury", 0.385f, 1.0f);
+  GeometryNode mercury("Mercury");
   mercury.setGeometry(planet_model);
-  mercury.setRotationSpeed(3.012f);
-  mercury.setDistance(10.0f);
+  mercury.setRotationSpeed(4.7f);
+  mercury.setDistance(2.0f);
+  mercury.setSize(0.07f);
 
-  GeometryNode pluto("Pluto", 0.18f, 1.0f);
+  GeometryNode venus("Venus");
+  venus.setGeometry(planet_model);
+  venus.setRotationSpeed(3.5f);
+  venus.setDistance(3.0f);
+  venus.setSize(0.12f);
+
+  GeometryNode earth("Earth");
+  earth.setGeometry(planet_model);
+  earth.setRotationSpeed(2.9f);
+  earth.setDistance(3.5f);
+  earth.setSize(0.17f);
+
+  GeometryNode mars("Mars");
+  mars.setGeometry(planet_model);
+  mars.setRotationSpeed(2.4f);
+  mars.setDistance(4.0f);
+  mars.setSize(0.12f);
+  
+  GeometryNode jupiter("Jupiter");
+  jupiter.setGeometry(planet_model);
+  jupiter.setRotationSpeed(1.3f);
+  jupiter.setDistance(6.0f);
+  jupiter.setSize(0.52f);
+
+  GeometryNode saturn("Saturn");
+  saturn.setGeometry(planet_model);
+  saturn.setRotationSpeed(0.97f);
+  saturn.setDistance(7.0f);
+  saturn.setSize(0.47f);
+
+  GeometryNode uranus("Uranus");
+  uranus.setGeometry(planet_model);
+  uranus.setRotationSpeed(0.68f);
+  uranus.setDistance(8.0f);
+  uranus.setSize(0.35f);
+
+  GeometryNode neptune("Neptune");
+  neptune.setGeometry(planet_model);
+  neptune.setRotationSpeed(0.54f);
+  neptune.setDistance(9.0f);
+  neptune.setSize(0.3f);
+
+  GeometryNode pluto("Pluto");
   pluto.setGeometry(planet_model);
-  pluto.setRotationSpeed(5.0f);
-  pluto.setDistance(50.0f);
+  pluto.setRotationSpeed(0.4f);
+  pluto.setDistance(10.0f);
+  pluto.setSize(0.07f);
 
   sun.addChild(std::make_shared<GeometryNode>(mercury));
+  sun.addChild(std::make_shared<GeometryNode>(venus));
+  sun.addChild(std::make_shared<GeometryNode>(earth));
+  sun.addChild(std::make_shared<GeometryNode>(mars));
+  sun.addChild(std::make_shared<GeometryNode>(saturn));
+  sun.addChild(std::make_shared<GeometryNode>(jupiter));
+  sun.addChild(std::make_shared<GeometryNode>(neptune));
+  sun.addChild(std::make_shared<GeometryNode>(uranus));
   sun.addChild(std::make_shared<GeometryNode>(pluto));
 
   Scenegraph init_Scene{"init_Scene", std::make_shared<GeometryNode>(sun)};
@@ -123,10 +178,24 @@ void addMoon(std::string const& planet_name, std::string const& moon_name) {
 }
 
 void ApplicationSolar::renderPlanets() const {
+
+  glm::mat4 sunMatrix = glm::mat4{};
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+                       1, GL_FALSE, glm::value_ptr(sunMatrix));
+  glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*sunMatrix);
+    glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  glBindVertexArray(planet_object.vertex_AO);
+  glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
+
+
   for(auto& planetIterator : scenegraph_.getRoot()->getChildList()) {
+    
     glm::mat4 planetMatrix = planetIterator->getLocalTransform();
-    planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planetIterator->getRotationSpeed(), glm::vec3{0.0f, 1.0f, 0.0f});
-    planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planetIterator->getDistance()});
+    planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planetIterator->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+    planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planetIterator->getDistance()+0.2});
+    planetMatrix = glm::scale(planetMatrix, glm::vec3(planetIterator->getSize(), planetIterator->getSize(), planetIterator->getSize()));
+   
     glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
     glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
