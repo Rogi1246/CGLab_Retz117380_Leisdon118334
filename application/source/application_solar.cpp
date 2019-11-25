@@ -29,7 +29,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
 {
   initializeGeometry();
   initializeShaderPrograms();
-  // initializeSceneGraph();
+  initializeScenegraph();
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -57,6 +57,8 @@ void ApplicationSolar::render() const {
 
   // draw bound vertex array using bound shader
   glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
+  renderPlanets();
 }
 
 
@@ -83,36 +85,68 @@ void ApplicationSolar::uploadUniforms() {
   uploadProjection();
 }
 
-Scenegraph ApplicationSolar::initializeScenegraph(model const& planet_model) {
+void ApplicationSolar::initializeScenegraph() {
+  model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
+
   //create root-node and initial Scenegraph
-  Node root_Node{"root", nullptr};
-  Scenegraph init_Scene{"init_Scene", std::make_shared<Node>(root_Node)};
+  GeometryNode sun{"Sun"};
   //creating planets
-  addPlanet(init_Scene, "Earth", planet_model);
-  addPlanet(init_Scene, "Venus", planet_model);
+  GeometryNode mercury("Mercury", 0.385f, 1.0f);
+  mercury.setGeometry(planet_model);
+  mercury.setRotationSpeed(3.012f);
+  mercury.setDistance(10.0f);
 
-  return init_Scene;
+  GeometryNode pluto("Pluto", 0.18f, 1.0f);
+  pluto.setGeometry(planet_model);
+  pluto.setRotationSpeed(5.0f);
+  pluto.setDistance(50.0f);
+
+  sun.addChild(std::make_shared<GeometryNode>(mercury));
+  sun.addChild(std::make_shared<GeometryNode>(pluto));
+
+  Scenegraph init_Scene{"init_Scene", std::make_shared<GeometryNode>(sun)};
+  scenegraph_ = init_Scene;
+  //scenegraph_.getRoot()->addChild(std::make_shared<GeometryNode>(mercury));
+  //scenegraph_.getRoot()->addChild(std::make_shared<GeometryNode>(pluto));
 }
 
-void ApplicationSolar::addPlanet(Scenegraph& Scenegraph, std::string const& planet_name, model const& planet_model) {
+void ApplicationSolar::addPlanet(std::string const& planet_name, model const& planet_model) {
   glm::mat4 local= glm::mat4{};
-  GeometryNode planet{planet_name};
-  if(planet.getName() == "Earth") {
-    planet = {"Earth", 1, 1.0f, 1.0f, 5.0f, 1.0f};
-    planet.setLocalTransform(local);
-  }
-
-  if(planet.getName() == "Venus") {
-    planet = {"Venus", 1, 0.950f, 1.177f, 3.723f, 1.0f};
-    planet.setLocalTransform(local);
-  }
+  //GeometryNode planet{planet_name};
   //planet.setGeometry(planet_model);
-  Scenegraph.getRoot()->addChild(std::make_shared<GeometryNode>(planet));
+  //scenegraph_.getRoot()->addChild(std::make_shared<GeometryNode>(planet));
 }
 
-void addMoon(Scenegraph& Scenegraph, std::string const& planet_name, std::string const& moon_name) {
+void addMoon(std::string const& planet_name, std::string const& moon_name) {
   GeometryNode moon{moon_name};
-  Scenegraph.getRoot()->getChildren(planet_name)->addChild(std::make_shared<GeometryNode>(moon));
+  //scenegraph_.getRoot()->getChildren(planet_name)->addChild(std::make_shared<GeometryNode>(moon));
+}
+
+void ApplicationSolar::renderPlanets() const {
+  for(auto& planetIterator : scenegraph_.getRoot()->getChildList()) {
+    glm::mat4 planetMatrix = planetIterator->getLocalTransform();
+    planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planetIterator->getRotationSpeed(), glm::vec3{0.0f, 1.0f, 0.0f});
+    planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planetIterator->getDistance()});
+    glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
+    glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
+    glUseProgram(m_shaders.at("planet").handle);
+
+    glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+                       1, GL_FALSE, glm::value_ptr(planetMatrix));
+
+    // extra matrix for normal transformation to keep them orthogonal to surface
+    glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+                       1, GL_FALSE, glm::value_ptr(planetMatrix));
+
+    // bind the VAO to draw
+    glBindVertexArray(planet_object.vertex_AO);
+
+    // draw bound vertex array using bound shader
+    glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
+
+  }
 }
 
 ///////////////////////////// intialisation functions /////////////////////////
@@ -165,7 +199,7 @@ void ApplicationSolar::initializeGeometry() {
   // transfer number of indices to model object 
   planet_object.num_elements = GLsizei(planet_model.indices.size());
 
-  initializeScenegraph(planet_model);
+  initializeScenegraph();
 }
 
 ///////////////////////////// callback functions for window events ////////////

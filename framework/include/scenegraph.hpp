@@ -5,7 +5,7 @@
 class Scenegraph{
     public:
     Scenegraph();
-    Scenegraph(std::string name, std::shared_ptr<Node> root);
+    Scenegraph(std::string name, std::shared_ptr<Node> const& root);
     
     std::string getName() const;
     std::shared_ptr<Node> getRoot() const;

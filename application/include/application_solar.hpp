@@ -32,11 +32,13 @@ class ApplicationSolar : public Application {
   // update uniform values
   void uploadUniforms();
 
-  Scenegraph initializeScenegraph(model const& planet_model);
+  void initializeScenegraph();
   //add Planet to Scenegraph
-  void addPlanet(Scenegraph& Scenegraph, std::string const& planet_name, model const& planet_model);
+  void addPlanet(std::string const& planet_name, model const& planet_model);
   //to add moon/s to a planet
-  void addMoon(Scenegraph& Scenegraph, std::string const& planet_name, std::string const& moon_name);
+  void addMoon(std::string const& planet_name, std::string const& moon_name);
+
+  void renderPlanets() const;
 
   // upload projection matrix
   void uploadProjection();
@@ -50,6 +52,8 @@ class ApplicationSolar : public Application {
   glm::fmat4 m_view_transform;
   // camera projection matrix
   glm::fmat4 m_view_projection;
+
+  Scenegraph scenegraph_;
 };
 
 #endif

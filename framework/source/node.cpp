@@ -49,17 +49,34 @@ glm::mat4 Node::getWorldTransform() const {
     return worldTransform_;
 }
         
+
+float Node::getRotationSpeed() const {
+    return rotation_sp_;
+}
+
+float Node::getDistance() const {
+    return distance_;
+}
+
 //Setter
 void Node::setParent(std::shared_ptr<Node> parent) {
-    parent = parent_;
+    parent_ = parent;
 }
 
 void Node::setLocalTransform(glm::mat4 localTrans) {
-    localTrans = localTransform_;
+    localTransform_ = localTrans;
 }
 
 void Node::setWorldTransform(glm::mat4 worldTrans) {
-    worldTrans = worldTransform_;
+    worldTransform_ = worldTrans;
+}
+
+void Node::setRotationSpeed(float rotation_sp) {
+    rotation_sp_ = rotation_sp;
+}
+
+void Node::setDistance(float distance) {
+    distance_ = distance;
 }
 
 //Adding and removing children

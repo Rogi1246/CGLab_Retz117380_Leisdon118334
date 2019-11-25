@@ -26,11 +26,15 @@ class Node{
         int getDepth() const;
         glm::mat4 getLocalTransform() const;
         glm::mat4 getWorldTransform() const;
+        float getRotationSpeed() const;
+        float getDistance() const;
 
         //Setter
         void setParent(std::shared_ptr<Node> parent);
         void setLocalTransform(glm::mat4 localTrans);
         void setWorldTransform(glm::mat4 worldTrans);
+        void setRotationSpeed(float rotation_sp);
+        void setDistance(float distance);
 
         //Adding and removing children
         void addChild(std::shared_ptr<Node> child);
@@ -44,6 +48,8 @@ class Node{
         int depth_;
         glm::mat4 localTransform_;
         glm::mat4 worldTransform_;
+        float rotation_sp_;
+        float distance_;
 
 };
 #endif 
