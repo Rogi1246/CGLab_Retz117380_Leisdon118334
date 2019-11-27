@@ -104,13 +104,13 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode venus("Venus");
   venus.setGeometry(planet_model);
   venus.setRotationSpeed(3.5f);
-  venus.setDistance(3.5f);
+  venus.setDistance(3.0f);
   venus.setSize(0.12f);
 
   GeometryNode earth("Earth");
   earth.setGeometry(planet_model);
   earth.setRotationSpeed(2.9f);
-  earth.setDistance(5.0f);
+  earth.setDistance(4.5f);
   earth.setSize(0.17f);
 
   GeometryNode moon("Moon");
@@ -124,37 +124,37 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode mars("Mars");
   mars.setGeometry(planet_model);
   mars.setRotationSpeed(2.4f);
-  mars.setDistance(6.5f);
+  mars.setDistance(5.5f);
   mars.setSize(0.12f);
   
   GeometryNode jupiter("Jupiter");
   jupiter.setGeometry(planet_model);
   jupiter.setRotationSpeed(1.3f);
-  jupiter.setDistance(7.0f);
+  jupiter.setDistance(6.8f);
   jupiter.setSize(0.52f);
 
   GeometryNode saturn("Saturn");
   saturn.setGeometry(planet_model);
   saturn.setRotationSpeed(0.97f);
-  saturn.setDistance(8.5f);
+  saturn.setDistance(8.4f);
   saturn.setSize(0.47f);
 
   GeometryNode uranus("Uranus");
   uranus.setGeometry(planet_model);
   uranus.setRotationSpeed(0.68f);
-  uranus.setDistance(9.0f);
+  uranus.setDistance(9.5f);
   uranus.setSize(0.35f);
 
   GeometryNode neptune("Neptune");
   neptune.setGeometry(planet_model);
   neptune.setRotationSpeed(0.54f);
-  neptune.setDistance(10.5f);
+  neptune.setDistance(11.4f);
   neptune.setSize(0.3f);
 
   GeometryNode pluto("Pluto");
   pluto.setGeometry(planet_model);
   pluto.setRotationSpeed(0.4f);
-  pluto.setDistance(12.0f);
+  pluto.setDistance(12.5f);
   pluto.setSize(0.07f);
 
   sun.addChild(std::make_shared<GeometryNode>(mercury));
