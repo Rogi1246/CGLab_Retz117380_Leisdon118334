@@ -8,6 +8,8 @@
 #include "scenegraph.hpp"
 #include "geometry_node.hpp"
 
+#include <vector>
+
 // gpu representation of model
 class ApplicationSolar : public Application {
  public:
@@ -29,6 +31,7 @@ class ApplicationSolar : public Application {
  protected:
   void initializeShaderPrograms();
   void initializeGeometry();
+  void initializeStarGeometry();
   // update uniform values
   void uploadUniforms();
 
@@ -39,7 +42,7 @@ class ApplicationSolar : public Application {
   void addMoon(std::string const& planet_name, std::string const& moon_name);
 
   void renderPlanets() const;
-
+  void renderStars() const;
   // upload projection matrix
   void uploadProjection();
   // upload view matrix
@@ -47,6 +50,7 @@ class ApplicationSolar : public Application {
 
   // cpu representation of model
   model_object planet_object;
+  model_object star_object;
   
   // camera transform matrix
   glm::fmat4 m_view_transform;
@@ -54,6 +58,8 @@ class ApplicationSolar : public Application {
   glm::fmat4 m_view_projection;
 
   Scenegraph scenegraph_;
+
+  std::vector<float> starsVec_;
 };
 
 #endif
