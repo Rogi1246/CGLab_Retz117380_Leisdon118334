@@ -19,6 +19,7 @@ using namespace gl;
 
 #include <iostream>
 #include "geometry_node.hpp"
+
 //just global atm, trying out 
 const int star_count = 100;
 
@@ -64,7 +65,7 @@ void ApplicationSolar::uploadView() {
                        1, GL_FALSE, glm::value_ptr(view_matrix));
 
   //bind shader & upload ViewMatrix for stars
-  printf("star view uploading! \n");
+  //printf("star view uploading! \n");
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ViewMatrix"),
                        1, GL_FALSE, glm::value_ptr(view_matrix));
@@ -72,6 +73,7 @@ void ApplicationSolar::uploadView() {
 
 void ApplicationSolar::uploadProjection() {
   // upload matrix to gpu
+  printf("planet projection uploading! \n");
   glUseProgram(m_shaders.at("planet").handle);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ProjectionMatrix"),
                        1, GL_FALSE, glm::value_ptr(m_view_projection));
@@ -86,7 +88,7 @@ void ApplicationSolar::uploadProjection() {
 // update uniform locations
 void ApplicationSolar::uploadUniforms() { 
   // bind shader to which to upload unforms
-  //glUseProgram(m_shaders.at("planet").handle);
+  // glUseProgram(m_shaders.at("planet").handle);
   // upload uniform values to new locations
   uploadView();
   uploadProjection();
@@ -284,7 +286,7 @@ void ApplicationSolar::renderPlanets() const {
 
       // extra matrix for normal transformation to keep them orthogonal to surface
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
-                         1, GL_FALSE, glm::value_ptr(planetMatrix));
+                         1, GL_FALSE, glm::value_ptr(normal_matrix));
 
       // bind the VAO to draw
       glBindVertexArray(planet_object.vertex_AO);
@@ -370,8 +372,9 @@ void ApplicationSolar::initializeGeometry() {
 
   void ApplicationSolar::initializeStarGeometry() {
   model star_model;
+  //for indices 
   int index = 0;
-  //hold positions and colors for stars
+  //hold positions and colors for stars (2 * 3-values(coordinates and colors) *count of stars)
   GLfloat starVertexBuffer[2*3*star_count];
   //randomizing values 
   for (int i = 0; i < star_count; i++) {
@@ -382,7 +385,7 @@ void ApplicationSolar::initializeGeometry() {
     }
     //color
     for (int k = 0; k < 3; k++) {
-      starVertexBuffer[index] = (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX));
+      starVertexBuffer[index] = ((static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX)) / 2.0f + 0.5f);
       index++;
     }
   }
