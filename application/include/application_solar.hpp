@@ -54,6 +54,7 @@ class ApplicationSolar : public Application {
   glm::fmat4 m_view_projection;
 
   Scenegraph scenegraph_;
+  std::list<std::shared_ptr<Node>> scenegraphList_;
 };
 
 #endif

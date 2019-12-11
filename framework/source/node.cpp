@@ -1,13 +1,16 @@
 #include "node.hpp"
 
 //Constructors
-Node::Node() {}
+Node::Node():
+    name_{"planet"},
+    parent_{nullptr}
+ {}
 
-Node::Node(std::string name, std::shared_ptr<Node> parent) {
-    name = name_;
-    parent = parent_;
-    worldTransform_ = glm::mat4(1.0);
-}
+Node::Node(std::string name, std::shared_ptr<Node> parent):
+    name_{name},
+    parent_{parent},
+    worldTransform_{glm::mat4(1.0)}
+ {}
 
 //Getter
 std::shared_ptr<Node> Node::getParent() const {

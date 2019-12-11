@@ -1,14 +1,16 @@
 #include "geometry_node.hpp"
 
-GeometryNode::GeometryNode(std::string name) :
-    name_{name} {}
+GeometryNode::GeometryNode():
+    Node{"default",nullptr}
+{}
 
-GeometryNode::GeometryNode(std::string name, float diameter, float rotation_self ) {
-    name_ = name;
-    //depth_ = depth;
-    diameter_ = diameter;
-    rotation_self_ = rotation_self;
-}
+GeometryNode::GeometryNode(std::string name) :
+    Node{name, nullptr}
+    {}
+
+GeometryNode::GeometryNode(std::string name, std::shared_ptr<Node>(parent)):
+    Node{name,parent}
+    {}
 
 model GeometryNode::getGeometry() const {
     return geometryModel_;

@@ -8,8 +8,9 @@
 class GeometryNode : public Node {
 
     public:
+        GeometryNode();
         GeometryNode(std::string name);
-        GeometryNode(std::string name, float diameter, float rotation_self );
+        GeometryNode(std::string name, std::shared_ptr<Node>(parent));
         model getGeometry() const;
         void setGeometry(model geometryModel);
 

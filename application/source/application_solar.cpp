@@ -88,87 +88,148 @@ void ApplicationSolar::uploadUniforms() {
 void ApplicationSolar::initializeScenegraph() {
   model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
 
+  Node root("Root",nullptr);
   //create root-node and initial Scenegraph
-  GeometryNode sun{"Sun"};
+  Node sunH{"Sun Holder", std::make_shared<Node>(root)};
+  sunH.setRotationSpeed(0.0f);
+  sunH.setDistance(0.0f);
+  
+  GeometryNode sun{"Sun", std::make_shared<Node>(sunH)};
   sun.setGeometry(planet_model);
-  sun.setRotationSpeed(0.0f);
-  sun.setDistance(0.0f);
   sun.setSize(1.0f);
+  sunH.addChild(std::make_shared<GeometryNode>(sun));
+  scenegraphList_.push_back(std::make_shared<Node>(sunH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
+
   //creating planets
-  GeometryNode mercury("Mercury");
+  Node mercuryH{"Mercury Holder", std::make_shared<Node>(root)};
+  mercuryH.setRotationSpeed(4.7f);
+  mercuryH.setDistance(2.0f);
+
+  GeometryNode mercury("Mercury", std::make_shared<Node>(mercuryH));
   mercury.setGeometry(planet_model);
-  mercury.setRotationSpeed(4.7f);
-  mercury.setDistance(2.0f);
   mercury.setSize(0.07f);
+  mercuryH.addChild(std::make_shared<GeometryNode>(mercury));
+  scenegraphList_.push_back(std::make_shared<Node>(mercuryH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(mercury));
 
-  GeometryNode venus("Venus");
+
+  Node venusH{"Venus Holder", std::make_shared<Node>(root)};
+  venusH.setRotationSpeed(3.5f);
+  venusH.setDistance(3.0f);
+
+  GeometryNode venus("Venus", std::make_shared<Node>(venusH));
   venus.setGeometry(planet_model);
-  venus.setRotationSpeed(3.5f);
-  venus.setDistance(3.0f);
   venus.setSize(0.12f);
+  venusH.addChild(std::make_shared<GeometryNode>(venus));
+  scenegraphList_.push_back(std::make_shared<Node>(venusH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(venus));
 
-  GeometryNode earth("Earth");
+  Node earthH{"Earth Holder", std::make_shared<Node>(root)};
+  earthH.setRotationSpeed(2.9f);
+  earthH.setDistance(4.5f);
+
+  GeometryNode earth("Earth", std::make_shared<Node>(earthH));
   earth.setGeometry(planet_model);
-  earth.setRotationSpeed(2.9f);
-  earth.setDistance(4.5f);
   earth.setSize(0.17f);
+  earthH.addChild(std::make_shared<GeometryNode>(earth));
+  scenegraphList_.push_back(std::make_shared<Node>(earthH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(earth));
 
-  GeometryNode moon("Moon");
+  Node moonH{"Moon Holder", std::make_shared<Node>(earthH)};
+  moonH.setRotationSpeed(2.9f);
+  moonH.setDistance(0.4f);
+
+  GeometryNode moon("Moon",std::make_shared<Node>(moonH));
   moon.setGeometry(planet_model);
-  moon.setRotationSpeed(2.9f);
-  moon.setDistance(0.4f);
   moon.setSize(0.05f);
 
-  earth.addChild(std::make_shared<GeometryNode>(moon));
+  earthH.addChild(std::make_shared<Node>(moonH));
+  moonH.addChild(std::make_shared<GeometryNode>(moon));
+  scenegraphList_.push_back(std::make_shared<Node>(moonH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(moon));
 
-  GeometryNode mars("Mars");
+  Node marsH{"Mars Holder", std::make_shared<Node>(root)};
+  marsH.setRotationSpeed(2.4f);
+  marsH.setDistance(5.5f);
+
+  GeometryNode mars("Mars", std::make_shared<Node>(marsH));
   mars.setGeometry(planet_model);
-  mars.setRotationSpeed(2.4f);
-  mars.setDistance(5.5f);
   mars.setSize(0.12f);
-  
-  GeometryNode jupiter("Jupiter");
+  marsH.addChild(std::make_shared<GeometryNode>(mars));
+  scenegraphList_.push_back(std::make_shared<Node>(marsH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(mars));
+
+  Node jupiterH{"Jupiter Holder", std::make_shared<Node>(root)};
+  jupiterH.setRotationSpeed(1.3f);
+  jupiterH.setDistance(6.8f);
+
+  GeometryNode jupiter("Jupiter", std::make_shared<Node>(jupiterH));
   jupiter.setGeometry(planet_model);
-  jupiter.setRotationSpeed(1.3f);
-  jupiter.setDistance(6.8f);
   jupiter.setSize(0.52f);
+  jupiterH.addChild(std::make_shared<GeometryNode>(jupiter));
+  scenegraphList_.push_back(std::make_shared<Node>(jupiterH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(jupiter));
 
-  GeometryNode saturn("Saturn");
+  Node saturnH("SaturnHolder", std::make_shared<Node>(root));
+  saturnH.setRotationSpeed(0.97f);
+  saturnH.setDistance(8.4f);
+  
+  GeometryNode saturn("Saturn", std::make_shared<Node>(saturnH));
   saturn.setGeometry(planet_model);
-  saturn.setRotationSpeed(0.97f);
-  saturn.setDistance(8.4f);
   saturn.setSize(0.47f);
+  saturn.setRotationSpeed(0.5f);
+  saturnH.addChild(std::make_shared<GeometryNode>(saturn));
+  scenegraphList_.push_back(std::make_shared<Node>(saturnH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(saturn));
 
-  GeometryNode uranus("Uranus");
+  Node uranusH{"Uranus Holder", std::make_shared<Node>(root)};
+  uranusH.setRotationSpeed(0.68f);
+  uranusH.setDistance(9.5f);
+   
+  GeometryNode uranus("Uranus", std::make_shared<Node>(uranusH));
   uranus.setGeometry(planet_model);
-  uranus.setRotationSpeed(0.68f);
-  uranus.setDistance(9.5f);
   uranus.setSize(0.35f);
+  scenegraphList_.push_back(std::make_shared<Node>(uranusH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(uranus));
 
-  GeometryNode neptune("Neptune");
+
+  Node neptuneH{"Neptune Holder", std::make_shared<Node>(root)};
+  neptuneH.setRotationSpeed(0.54f);
+  neptuneH.setDistance(11.4f);
+
+  GeometryNode neptune("Neptune", std::make_shared<Node>(neptuneH));
   neptune.setGeometry(planet_model);
-  neptune.setRotationSpeed(0.54f);
-  neptune.setDistance(11.4f);
   neptune.setSize(0.3f);
 
-  GeometryNode pluto("Pluto");
+  scenegraphList_.push_back(std::make_shared<Node>(neptuneH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(neptune));
+
+  Node plutoH{"Pluto Holder", std::make_shared<Node>(root)};
+  plutoH.setRotationSpeed(0.4f);
+  plutoH.setDistance(12.5f);
+
+  GeometryNode pluto("Pluto", std::make_shared<Node>(plutoH));
   pluto.setGeometry(planet_model);
-  pluto.setRotationSpeed(0.4f);
-  pluto.setDistance(12.5f);
   pluto.setSize(0.07f);
+  scenegraphList_.push_back(std::make_shared<Node>(plutoH));
+  scenegraphList_.push_back(std::make_shared<GeometryNode>(pluto));
 
-  sun.addChild(std::make_shared<GeometryNode>(mercury));
-  sun.addChild(std::make_shared<GeometryNode>(venus));
-  sun.addChild(std::make_shared<GeometryNode>(earth));
-  sun.addChild(std::make_shared<GeometryNode>(mars));
-  sun.addChild(std::make_shared<GeometryNode>(saturn));
-  sun.addChild(std::make_shared<GeometryNode>(jupiter));
-  sun.addChild(std::make_shared<GeometryNode>(neptune));
-  sun.addChild(std::make_shared<GeometryNode>(uranus));
-  sun.addChild(std::make_shared<GeometryNode>(pluto));
+  root.addChild(std::make_shared<Node>(mercuryH));
+  root.addChild(std::make_shared<Node>(venusH));
+  root.addChild(std::make_shared<Node>(earthH));
+  root.addChild(std::make_shared<Node>(marsH));
+  root.addChild(std::make_shared<Node>(saturnH));
+  root.addChild(std::make_shared<Node>(jupiterH));
+  root.addChild(std::make_shared<Node>(neptuneH));
+  root.addChild(std::make_shared<Node>(uranusH));
+  root.addChild(std::make_shared<Node>(plutoH));
 
-  Scenegraph init_Scene{"init_Scene", std::make_shared<GeometryNode>(sun)};
+  Scenegraph init_Scene{"init_Scene", std::make_shared<Node>(root)};
   scenegraph_ = init_Scene;
+  for(auto t : scenegraphList_){
+    std::cout <<t->getName() << std::endl;
+  }
 }
 
 
@@ -187,15 +248,64 @@ void ApplicationSolar::renderPlanets() const {
   //sunMatrix = glm::translate(sunMatrix, glm::vec3{0.0f, 0.0f, sun->getDistance()});
   //sunMatrix = glm::scale(sunMatrix, glm::vec3(sun->getSize(), sun->getSize(), sun->getSize()));
 
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),1, GL_FALSE, glm::value_ptr(sunMatrix));
-  glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*sunMatrix);
-  glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
-  glBindVertexArray(planet_object.vertex_AO);
-  glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  //glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),1, GL_FALSE, glm::value_ptr(sunMatrix));
+  //glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*sunMatrix);
+  //glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+  //glBindVertexArray(planet_object.vertex_AO);
+  //glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
 
+  for(auto planet : scenegraphList_){
+    if(planet->getChildList().empty()){
 
+      glm::mat4 planetMatrix = planet->getLocalTransform();
+      auto parent = planet->getParent();
+      int depth = 2;
+      while(depth>0 && parent->getParent()!=nullptr){
+        if(depth == 1){
+          planetMatrix = planet->getLocalTransform();
+          planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+          planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
+          planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getParent()->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+          planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planet->getParent()->getDistance()+0.2});
+          parent = parent->getParent();
+          --depth;
+        }else{
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
+        parent = parent->getParent();
+        --depth;
+        }
+      }
+      planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+      planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planet->getDistance()+0.2});
+      planetMatrix = glm::scale(planetMatrix, glm::vec3(planet->getSize(), planet->getSize(), planet->getSize()));
+
+      glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
+      glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+
+      glUseProgram(m_shaders.at("planet").handle);
+
+      glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+                         1, GL_FALSE, glm::value_ptr(planetMatrix));
+
+      // extra matrix for normal transformation to keep them orthogonal to surface
+      glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+                         1, GL_FALSE, glm::value_ptr(planetMatrix));
+
+      // bind the VAO to draw
+      glBindVertexArray(planet_object.vertex_AO);
+
+      // draw bound vertex array using bound shader
+      glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
+    }
+  }
+}
+/*
   for(auto& planetIterator : scenegraph_.getRoot()->getChildList()) {
+
+
+    
     
     glm::mat4 planetMatrix = planetIterator->getLocalTransform();
     planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planetIterator->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
@@ -239,10 +349,8 @@ void ApplicationSolar::renderPlanets() const {
       glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 
       }
-    }
-
-  }
-}
+    }*/
+  
 
 ///////////////////////////// intialisation functions /////////////////////////
 // load shader sources

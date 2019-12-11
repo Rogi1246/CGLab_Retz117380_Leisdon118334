@@ -20,7 +20,7 @@ class Node{
         //Getter
         std::shared_ptr<Node> getParent() const;
         std::shared_ptr<Node> getChildren(std::string childName) const;
-        virtual std::list<std::shared_ptr<Node>> getChildList();
+        std::list<std::shared_ptr<Node>> getChildList();
         std::string getName() const;
         std::string getPath() const;
         int getDepth() const;
@@ -47,6 +47,7 @@ class Node{
     private:
         std::shared_ptr<Node> parent_;
         std::list<std::shared_ptr<Node>> children_;
+        std::list<std::shared_ptr<Node>> childrenList_;
         std::string name_;
         std::string path_;
         int depth_;
