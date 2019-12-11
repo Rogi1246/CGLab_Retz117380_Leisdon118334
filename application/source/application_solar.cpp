@@ -65,7 +65,7 @@ void ApplicationSolar::uploadView() {
                        1, GL_FALSE, glm::value_ptr(view_matrix));
 
   //bind shader & upload ViewMatrix for stars
-  //printf("star view uploading! \n");
+  printf("star view uploading! \n");
   glUseProgram(m_shaders.at("star").handle);
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ViewMatrix"),
                        1, GL_FALSE, glm::value_ptr(view_matrix));
@@ -152,6 +152,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode moon("Moon",std::make_shared<Node>(moonH));
   moon.setGeometry(planet_model);
   moon.setSize(0.05f);
+  moon.setIsMoon(true);
 
   earthH.addChild(std::make_shared<Node>(moonH));
   moonH.addChild(std::make_shared<GeometryNode>(moon));
@@ -251,8 +252,22 @@ void ApplicationSolar::renderPlanets() const {
 
       glm::mat4 planetMatrix = planet->getLocalTransform();
       auto parent = planet->getParent();
-      int depth = 2;
-      while(depth>0 && parent->getParent()!=nullptr){
+      //int depth = 2;
+
+      if(planet->getIsMoon() == true){
+        auto earthH = parent->getParent();
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * earthH->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, earthH->getDistance()+0.2});
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
+      } else {
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
+      }
+      //planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+      planetMatrix = glm::scale(planetMatrix, glm::vec3(planet->getSize(), planet->getSize(), planet->getSize()));
+
+      /*while(depth>0 && parent->getParent()!=nullptr){
        // std::cout << planet->getName() << "\n";
        // std::cout << "depth: " << depth << "\n";
        // std::cout << "parent: " << parent->getName() << "\n" <<std::endl;
@@ -270,11 +285,11 @@ void ApplicationSolar::renderPlanets() const {
         planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
         parent = parent->getParent();
         --depth;
-        }
-      }
-      planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
-      planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planet->getDistance()+0.2});
-      planetMatrix = glm::scale(planetMatrix, glm::vec3(planet->getSize(), planet->getSize(), planet->getSize()));
+        }*/
+      //}
+      //planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+      //planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, planet->getDistance()+0.2});
+      //planetMatrix = glm::scale(planetMatrix, glm::vec3(planet->getSize(), planet->getSize(), planet->getSize()));
 
       glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
       glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
@@ -286,7 +301,7 @@ void ApplicationSolar::renderPlanets() const {
 
       // extra matrix for normal transformation to keep them orthogonal to surface
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
-                         1, GL_FALSE, glm::value_ptr(normal_matrix));
+                         1, GL_FALSE, glm::value_ptr(planetMatrix));
 
       // bind the VAO to draw
       glBindVertexArray(planet_object.vertex_AO);
@@ -321,8 +336,8 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
 
-  // have to do the same for stars
-  // store in container
+  //have to do the same for stars
+  //store in container
   m_shaders.emplace("star", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/star.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/star.frag"}}});
   // request uniform locations for shader program

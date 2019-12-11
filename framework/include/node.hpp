@@ -29,6 +29,7 @@ class Node{
         float getRotationSpeed() const;
         float getDistance() const;
         float getSize() const;
+        bool getIsMoon() const;
 
 
         //Setter
@@ -38,6 +39,7 @@ class Node{
         void setRotationSpeed(float rotation_sp);
         void setDistance(float distance);
         void setSize(float size);
+        void setIsMoon(bool is_moon);
 
 
         //Adding and removing children
@@ -51,6 +53,7 @@ class Node{
         std::string name_;
         std::string path_;
         int depth_;
+        bool is_moon_ = false;
         glm::mat4 localTransform_;
         glm::mat4 worldTransform_;
         float rotation_sp_;

@@ -64,6 +64,9 @@ float Node::getDistance() const {
 float Node::getSize() const {
     return size_;
 }
+bool Node::getIsMoon() const{
+    return is_moon_;
+}
 
 
 //Setter
@@ -89,6 +92,9 @@ void Node::setDistance(float distance) {
 
 void Node::setSize(float size) {
     size_ = size;
+}
+void Node::setIsMoon(bool is_moon) {
+    is_moon_ = is_moon;
 }
 
 //Adding and removing children
