@@ -36,10 +36,6 @@ class ApplicationSolar : public Application {
   void uploadUniforms();
 
   void initializeScenegraph();
-  //add Planet to Scenegraph
-  void addPlanet(std::string const& planet_name, model const& planet_model);
-  //to add moon/s to a planet
-  void addMoon(std::string const& planet_name, std::string const& moon_name);
 
   void renderPlanets() const;
   void renderStars() const;
@@ -56,14 +52,10 @@ class ApplicationSolar : public Application {
   glm::fmat4 m_view_transform;
   // camera projection matrix
   glm::fmat4 m_view_projection;
+  std::vector<float> stars_;
 
   Scenegraph scenegraph_;
-<<<<<<< HEAD
   std::list<std::shared_ptr<Node>> scenegraphList_;
-=======
-
-  std::vector<float> starsVec_;
->>>>>>> d62abead709ab50896fd5b7247477e592a2dcacc
 };
 
 #endif
