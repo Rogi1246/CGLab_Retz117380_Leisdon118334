@@ -21,7 +21,7 @@ using namespace gl;
 #include "geometry_node.hpp"
 
 //just global atm, trying out 
-const int star_count = 100;
+const int star_count = 2000;
 
 //add star_object{} in here later 
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
