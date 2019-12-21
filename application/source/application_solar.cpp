@@ -197,7 +197,7 @@ void ApplicationSolar::initializeScenegraph() {
   saturn.setGeometry(planet_model);
   saturn.setSize(0.47f);
   saturn.setRotationSpeed(0.5f);
-  saturn.setPlanetColor(glm::vec3{235.0f, 174.0f, 52.0f});
+  saturn.setPlanetColor(glm::vec3{255, 201, 0 });
   saturnH.addChild(std::make_shared<GeometryNode>(saturn));
   scenegraphList_.push_back(std::make_shared<Node>(saturnH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(saturn));
@@ -209,7 +209,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode uranus("Uranus", std::make_shared<Node>(uranusH));
   uranus.setGeometry(planet_model);
   uranus.setSize(0.35f);
-  uranus.setPlanetColor(glm::vec3{352.0f, 168.0f, 235.0f});
+  uranus.setPlanetColor(glm::vec3{0, 255, 255});
   uranusH.addChild(std::make_shared<GeometryNode>(uranus));
   scenegraphList_.push_back(std::make_shared<Node>(uranusH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(uranus));
