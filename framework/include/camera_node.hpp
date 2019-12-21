@@ -3,7 +3,7 @@
 
 #include "node.hpp"
 
-class CameraNode {
+class CameraNode : public Node{
 
     public:
         CameraNode(std::string const& name, std::shared_ptr<Node> parent);

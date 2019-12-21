@@ -9,11 +9,16 @@ uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 NormalMatrix;
+//input planet color for fragment shader
+uniform vec3 PlanetColor;
+
 
 out vec3 pass_Normal;
+out vec3 Planet_Color;
 
 void main(void)
 {
 	gl_Position = (ProjectionMatrix  * ViewMatrix * ModelMatrix) * vec4(in_Position, 1.0);
 	pass_Normal = (NormalMatrix * vec4(in_Normal, 0.0)).xyz;
+	Planet_Color = PlanetColor;
 }

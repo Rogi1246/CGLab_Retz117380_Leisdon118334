@@ -16,6 +16,14 @@ model GeometryNode::getGeometry() const {
     return geometryModel_;
 }     
 
+glm::vec3 GeometryNode::getPlanetColor() const {
+    return planet_color_;
+}
+
 void GeometryNode::setGeometry(model geometryModel) {
     geometryModel_ = geometryModel;
+}
+
+void GeometryNode::setPlanetColor(glm::vec3 planetColor){
+    planet_color_ = planetColor;
 }

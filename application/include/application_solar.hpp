@@ -56,6 +56,7 @@ class ApplicationSolar : public Application {
 
   Scenegraph scenegraph_;
   std::list<std::shared_ptr<Node>> scenegraphList_;
+  std::list<std::shared_ptr<GeometryNode>> scenegraphList_geometry_;
 };
 
 #endif
