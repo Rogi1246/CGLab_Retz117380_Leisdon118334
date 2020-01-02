@@ -6,8 +6,10 @@
 class PointLightNode : public Node {
 
     public:
-        PointLightNode(std::string const& name, std::shared_ptr<Node> parent);
-        
+        PointLightNode();
+        PointLightNode(std::string const& name, std::shared_ptr<Node>(parent), glm::vec3 lightColor, float lightInt);
+        glm::vec3 getLightCol();
+        float getLightInt();
 
 
     private:

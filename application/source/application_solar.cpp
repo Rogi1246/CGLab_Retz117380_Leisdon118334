@@ -22,6 +22,7 @@ using namespace gl;
 
 //just global atm, trying out 
 const int star_count = 2000;
+PointLightNode pointLight;
 
 //add star_object{} in here later 
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
@@ -50,7 +51,9 @@ ApplicationSolar::~ApplicationSolar() {
 }
 
 void ApplicationSolar::render() const {
-
+  //having nice background
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(0.12f, 0.19f, 0.13f, 1.0f);
   renderStars();
   renderPlanets();
   
@@ -85,19 +88,17 @@ void ApplicationSolar::uploadProjection() {
                       1, GL_FALSE, glm::value_ptr(m_view_projection));
 }
 
-// update uniform locations
-void ApplicationSolar::uploadUniforms() { 
-  // bind shader to which to upload unforms
-  // glUseProgram(m_shaders.at("planet").handle);
-  // upload uniform values to new locations
-  uploadView();
-  uploadProjection();
-}
-
 void ApplicationSolar::initializeScenegraph() {
   model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
 
   Node root("Root",nullptr);
+
+  //set lightColor and create PointLight
+  glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
+  pointLight = {"light", std::make_shared<Node>(root), lightColor, 1.0};
+  //add PointLight to root
+  root.addChild(std::make_shared<PointLightNode>(pointLight));
+
   //create root-node and initial Scenegraph
   Node sunH{"Sun Holder", std::make_shared<Node>(root)};
   sunH.setRotationSpeed(0.0f);
@@ -266,6 +267,26 @@ void ApplicationSolar::initializeScenegraph() {
 
 }
 
+// update uniform locations
+void ApplicationSolar::uploadUniforms() { 
+  //binding the planet-shader-programs
+  glUseProgram(m_shaders.at("planet").handle);
+
+  //3f 3 float values, 1f 1 float value and so on
+  //set the light-source (at the uniform positions)
+  glUniform3f(m_shaders.at("planet").u_locs.at("lightSrc"), 0.0f, 0.0f, 0.0f);
+  //get the color of the pointLight
+  glm::vec3 lightColorF = pointLight.getLightCol();
+  glUniform3f(m_shaders.at("planet").u_locs.at("lightCol"), (lightColorF.x + 0), (lightColorF.y + 1), (lightColorF.z + 2));
+  float lightIntF = pointLight.getLightInt();
+  glUniform1f(m_shaders.at("planet").u_locs.at("lightInt"), lightIntF);
+  glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"), 1);
+  // bind shader to which to upload unforms
+  // glUseProgram(m_shaders.at("planet").handle);
+  // upload uniform values to new locations
+  uploadView();
+  uploadProjection();
+}
 
 void ApplicationSolar::renderPlanets() const {
 
@@ -274,6 +295,7 @@ void ApplicationSolar::renderPlanets() const {
 
       glm::mat4 planetMatrix = planet->getLocalTransform();
       auto parent = planet->getParent();
+      auto color = planet->getPlanetColor();
       //int depth = 2;
 
       if(planet->getIsMoon() == true){
@@ -290,20 +312,22 @@ void ApplicationSolar::renderPlanets() const {
       planetMatrix = glm::scale(planetMatrix, glm::vec3(planet->getSize(), planet->getSize(), planet->getSize()));
 
 
-      glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
+      // glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
       glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
       
       glUseProgram(m_shaders.at("planet").handle);
 
       // load planet color in the shader (normalized with /255)
-      glUniform3f(m_shaders.at("planet").u_locs.at("PlanetColor"),planet->getPlanetColor().x/255,planet->getPlanetColor().y/255, planet->getPlanetColor().z/255);
+      glUniform3f(m_shaders.at("planet").u_locs.at("diffCol"), (color.x + 0), (color.y + 1), (color.z + 2));
       
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                          1, GL_FALSE, glm::value_ptr(planetMatrix));
 
       // extra matrix for normal transformation to keep them orthogonal to surface
-      glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+      
+      /*glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                          1, GL_FALSE, glm::value_ptr(normal_matrix));
+      */
 
       // bind the VAO to draw
       glBindVertexArray(planet_object.vertex_AO);
@@ -333,11 +357,17 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.emplace("planet", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/simple.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/simple.frag"}}});
   // request uniform locations for shader program
-  m_shaders.at("planet").u_locs["NormalMatrix"] = -1;
+  //m_shaders.at("planet").u_locs["NormalMatrix"] = -1;
   m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
-  m_shaders.at("planet").u_locs["PlanetColor"] = -1;
+  //m_shaders.at("planet").u_locs["PlanetColor"] = -1;
+  //now instead of planetcolor, use the actual colors (the shading variables)
+  m_shaders.at("planet").u_locs["lightSrc"] = -1;
+  m_shaders.at("planet").u_locs["lightCol"] = -1;
+  m_shaders.at("planet").u_locs["lightInt"] = -1;
+  m_shaders.at("planet").u_locs["diffCol"] = -1;
+  m_shaders.at("planet").u_locs["shaderSwitch"] = -1;
 
   //have to do the same for stars
   //store in container
@@ -472,6 +502,19 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   //move up
   else if (key == GLFW_KEY_SPACE  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.1f, 0.0f});
+    uploadView();
+  }
+  //key callback for shader switching
+  //Pressing 1 : BPhong
+  else if (key == GLFW_KEY_1) {
+    glUseProgram(m_shaders.at("planet").handle);
+    glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"),1);
+    uploadView();
+  }
+  //Pressing 2 : CellShading
+  else if (key == GLFW_KEY_2) {
+    glUseProgram(m_shaders.at("planet").handle);
+    glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"),2);
     uploadView();
   }
 

@@ -8,17 +8,23 @@ layout(location = 1) in vec3 in_Normal;
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
-uniform mat4 NormalMatrix;
+//uniform mat4 NormalMatrix;
+
 //input planet color for fragment shader
-uniform vec3 PlanetColor;
+//uniform vec3 PlanetColor;
 
-
+//pass to fragment shader
 out vec3 pass_Normal;
-out vec3 Planet_Color;
+out vec3 pass_FragmentPos;
+out vec3 pass_CameraPos;
+//out vec3 Planet_Color;
 
 void main(void)
 {
 	gl_Position = (ProjectionMatrix  * ViewMatrix * ModelMatrix) * vec4(in_Position, 1.0);
-	pass_Normal = (NormalMatrix * vec4(in_Normal, 0.0)).xyz;
-	Planet_Color = PlanetColor;
+	//pass_Normal = (NormalMatrix * vec4(in_Normal, 0.0)).xyz;
+	pass_Normal = mat3(ModelMatrix) * in_Normal;
+	pass_FragmentPos = vec3(ModelMatrix * vec4(in_Position, 1.0));
+	pass_CameraPos = (ModelMatrix * ViewMatrix * vec4(in_Position, 1.0)).xyz;
+	//Planet_Color = PlanetColor;
 }

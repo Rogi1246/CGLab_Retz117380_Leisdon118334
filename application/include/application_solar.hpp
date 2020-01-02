@@ -7,6 +7,7 @@
 #include "node.hpp"
 #include "scenegraph.hpp"
 #include "geometry_node.hpp"
+#include "point_light_node.hpp"
 
 #include <vector>
 
