@@ -22,9 +22,9 @@ void main() {
   //out_Color = vec4(abs(normalize(pass_Normal)),1.0);
 
   //Shading-values
-  vec3 ambCol = diffCol;
+  vec3 ambCol = diffCol*0.4;
   vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white 
-  float brightness = 20.0; //and make it shine
+  float brightness = 30.0f; //and make it shine
 
   vec3 lightDir = lightSrc - pass_FragmentPos;
   float dist = length(lightDir);

@@ -96,8 +96,9 @@ void ApplicationSolar::initializeScenegraph() {
   //set lightColor and create PointLight
   glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
   pointLight = {"light", std::make_shared<Node>(root), lightColor, 1.0};
+  scenegraphList_.push_back(std::make_shared<PointLightNode>(pointLight));
   //add PointLight to root
-  root.addChild(std::make_shared<PointLightNode>(pointLight));
+  //root.addChild(std::make_shared<PointLightNode>(pointLight));
 
   //create root-node and initial Scenegraph
   Node sunH{"Sun Holder", std::make_shared<Node>(root)};
@@ -107,7 +108,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode sun{"Sun", std::make_shared<Node>(sunH)};
   sun.setGeometry(planet_model);
   sun.setSize(1.0f);
-  sun.setPlanetColor(glm::vec3{255, 255, 0});
+  sun.setPlanetColor(glm::vec3{0.96f, 0.9f, 0.22f});
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
@@ -120,7 +121,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode mercury("Mercury", std::make_shared<Node>(mercuryH));
   mercury.setGeometry(planet_model);
   mercury.setSize(0.07f);
-  mercury.setPlanetColor(glm::vec3{255.0f, 24.0f, 8.0f});
+  mercury.setPlanetColor(glm::vec3{0.35f, 0.33f, 0.3f});
   mercuryH.addChild(std::make_shared<GeometryNode>(mercury));
   scenegraphList_.push_back(std::make_shared<Node>(mercuryH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(mercury));
@@ -133,7 +134,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode venus("Venus", std::make_shared<Node>(venusH));
   venus.setGeometry(planet_model);
   venus.setSize(0.12f);
-  venus.setPlanetColor(glm::vec3{255.0f, 103.0f, 8.0f});
+  venus.setPlanetColor(glm::vec3{0.94f, 0.9f, 0.55f});
   venusH.addChild(std::make_shared<GeometryNode>(venus));
   scenegraphList_.push_back(std::make_shared<Node>(venusH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(venus));
@@ -145,7 +146,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode earth("Earth", std::make_shared<Node>(earthH));
   earth.setGeometry(planet_model);
   earth.setSize(0.17f);
-  earth.setPlanetColor(glm::vec3{50.0f, 23.0f, 255.0f});
+  earth.setPlanetColor(glm::vec3{0.0f, 0.32f, 0.65f});
   earthH.addChild(std::make_shared<GeometryNode>(earth));
   scenegraphList_.push_back(std::make_shared<Node>(earthH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(earth));
@@ -158,7 +159,7 @@ void ApplicationSolar::initializeScenegraph() {
   moon.setGeometry(planet_model);
   moon.setSize(0.05f);
   moon.setIsMoon(true);
-  moon.setPlanetColor(glm::vec3{150.0f, 150.0f, 150.0f});
+  moon.setPlanetColor(glm::vec3{1.0f, 0.99f, 0.84f});
 
 
   earthH.addChild(std::make_shared<Node>(moonH));
@@ -173,7 +174,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode mars("Mars", std::make_shared<Node>(marsH));
   mars.setGeometry(planet_model);
   mars.setSize(0.12f);
-  mars.setPlanetColor(glm::vec3{173.0f, 57.0f, 28.0f});
+  mars.setPlanetColor(glm::vec3{0.5f, 0.0f, 0.0f});
   marsH.addChild(std::make_shared<GeometryNode>(mars));
   scenegraphList_.push_back(std::make_shared<Node>(marsH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(mars));
@@ -185,7 +186,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode jupiter("Jupiter", std::make_shared<Node>(jupiterH));
   jupiter.setGeometry(planet_model);
   jupiter.setSize(0.52f);
-  jupiter.setPlanetColor(glm::vec3{224.0f, 179.0f, 94.0f});
+  jupiter.setPlanetColor(glm::vec3{ 0.9f, 0.58f, 0.0f});
   jupiterH.addChild(std::make_shared<GeometryNode>(jupiter));
   scenegraphList_.push_back(std::make_shared<Node>(jupiterH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(jupiter));
@@ -198,7 +199,7 @@ void ApplicationSolar::initializeScenegraph() {
   saturn.setGeometry(planet_model);
   saturn.setSize(0.47f);
   saturn.setRotationSpeed(0.5f);
-  saturn.setPlanetColor(glm::vec3{255, 201, 0 });
+  saturn.setPlanetColor(glm::vec3{ 0.9f, 0.75f, 0.54f});
   saturnH.addChild(std::make_shared<GeometryNode>(saturn));
   scenegraphList_.push_back(std::make_shared<Node>(saturnH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(saturn));
@@ -210,7 +211,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode uranus("Uranus", std::make_shared<Node>(uranusH));
   uranus.setGeometry(planet_model);
   uranus.setSize(0.35f);
-  uranus.setPlanetColor(glm::vec3{0, 255, 255});
+  uranus.setPlanetColor(glm::vec3{0.69f, 0.893f, 0.93f});
   uranusH.addChild(std::make_shared<GeometryNode>(uranus));
   scenegraphList_.push_back(std::make_shared<Node>(uranusH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(uranus));
@@ -223,7 +224,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode neptune("Neptune", std::make_shared<Node>(neptuneH));
   neptune.setGeometry(planet_model);
   neptune.setSize(0.3f);
-  neptune.setPlanetColor(glm::vec3{56.0f, 83.0f, 255.0f});
+  neptune.setPlanetColor(glm::vec3{0.69f, 0.81f, 0.93f});
   neptuneH.addChild(std::make_shared<GeometryNode>(neptune));
   scenegraphList_.push_back(std::make_shared<Node>(neptuneH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(neptune));
@@ -235,7 +236,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode pluto("Pluto", std::make_shared<Node>(plutoH));
   pluto.setGeometry(planet_model);
   pluto.setSize(0.07f);
-  pluto.setPlanetColor(glm::vec3{15.0f, 0.0f, 150.0f});
+  pluto.setPlanetColor(glm::vec3{0.9f, 0.22f, 0.01f});
   plutoH.addChild(std::make_shared<GeometryNode>(pluto));
   scenegraphList_.push_back(std::make_shared<Node>(plutoH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(pluto));
