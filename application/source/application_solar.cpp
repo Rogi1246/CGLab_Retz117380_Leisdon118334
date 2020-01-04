@@ -92,7 +92,7 @@ void ApplicationSolar::initializeScenegraph() {
 
   //set lightColor and create PointLight
   glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
-  pointLight = {"light", std::make_shared<Node>(root), lightColor, 1.0};
+  pointLight = {"light", std::make_shared<Node>(root), lightColor, 5.0};
   scenegraphList_.push_back(std::make_shared<PointLightNode>(pointLight));
   //add PointLight to root
   //root.addChild(std::make_shared<PointLightNode>(pointLight));
@@ -105,7 +105,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode sun{"Sun", std::make_shared<Node>(sunH)};
   sun.setGeometry(planet_model);
   sun.setSize(1.0f);
-  sun.setPlanetColor(glm::vec3{0.096f, 0.09f, 0.022f});
+  sun.setPlanetColor(glm::vec3{0.9f, 0.9f, 0.0f});
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
@@ -315,7 +315,7 @@ void ApplicationSolar::renderPlanets() const {
       glUseProgram(m_shaders.at("planet").handle);
       
       // load planet color in the shader (normalized with /255)
-      glUniform3f(m_shaders.at("planet").u_locs.at("diffCol"), (planet->getPlanetColor().x), (planet->getPlanetColor().y), (planet->getPlanetColor().z ));
+      glUniform3f(m_shaders.at("planet").u_locs.at("diffCol"), (planet->getPlanetColor().x), (planet->getPlanetColor().y), (planet->getPlanetColor().z));
       
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                          1, GL_FALSE, glm::value_ptr(planetMatrix));

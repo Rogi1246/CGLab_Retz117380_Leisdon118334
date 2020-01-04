@@ -8,7 +8,7 @@ in vec3 pass_CameraPos;
 out vec4 out_Color;
 
 //light-values
-uniform vec3 lightSrc;
+//uniform vec3 lightSrc;
 uniform vec3 lightCol;
 uniform float lightInt;
 //diffuse Color and shaderSwitch uniforms
@@ -19,20 +19,22 @@ uniform int shaderSwitch; //b-phong : 1 | cel : 2
 const int shadeLevel = 3;
 float outLine = 1.0;
 
+const vec3 lightSrc = vec3(0.0, 0.0, 0.0);
+const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
+
 void main() {
   //out_Color = vec4(abs(normalize(pass_Normal)),1.0);
 
   //Shading-values
   vec3 ambCol = diffCol;
-  vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white 
-  float brightness = 10.0f; //and make it shine
+  float brightness = 20.0f; //and make it shine
 
   vec3 normal = normalize(pass_Normal);
   //vec from pixel to pointlight
   vec3 lightDir = lightSrc - pass_FragmentPos;
+  vec3 light = normalize(lightDir);
   //dist from pixel to pointlight so the intensity gets weaker with increased distance
   float dist = length(lightDir);
-  vec3 light = normalize(lightDir);
   //vec from pixel to camera
   vec3 cam = normalize(pass_CameraPos - pass_FragmentPos);
   //direction of reflection basically (angle)
@@ -44,10 +46,9 @@ void main() {
   //brightness/intensity, is it in front/back
   float diffAngle = max(dot(light, normal), 0.0);
   
-  vec3 beta = (lightCol * lightInt) / ((3.14159265359)*pow(dist, 2));
   //float specAngle = pow(max(0.0, dot(normal, halfWayThere)), brightness);
-  float specAngle = max(dot(halfWayThere, normal), brightness);
-
+  float specAngle = max(dot(halfWayThere, normal), 0.0);
+  float specc = pow(specAngle,brightness);
   //cel-shader
   if(shaderSwitch == 2) {
     //discretize diffAngle to determine intensity
@@ -66,12 +67,13 @@ void main() {
   }
 
   //ambiance, diffuse, specular
+  
   vec3 ambient = ambCol;
-  vec3 diffuse = diffCol * diffAngle * lightCol * lightInt / dist;
-  vec3 specular = specCol * specAngle * lightCol * lightInt / dist;
+  vec3 diffuse = diffCol * diffAngle * lightCol * (lightInt / dist);
+  vec3 specular = specc * specCol * lightCol * (lightInt / dist);
   //float specular = pow(specAngle, 16.0);
   //resulting value
-  vec3 finalCol = (ambient + (beta*(diffuse + specular))) * outLine;
+  vec3 finalCol = (ambient + diffuse + specular)*outLine;
   out_Color = vec4(finalCol, 1.0);
   
   //out color just the planet color at the moment ^^
