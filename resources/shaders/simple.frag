@@ -27,7 +27,7 @@ void main() {
 
   //Shading-values
   vec3 ambCol = diffCol;
-  float brightness = 20.0f; //and make it shine
+  float brightness = 25.0f; //and make it shine
 
   vec3 normal = normalize(pass_Normal);
   //vec from pixel to pointlight
