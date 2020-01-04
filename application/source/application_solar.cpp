@@ -51,9 +51,6 @@ ApplicationSolar::~ApplicationSolar() {
 }
 
 void ApplicationSolar::render() const {
-  //having nice background
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glClearColor(0.12f, 0.19f, 0.13f, 1.0f);
   renderStars();
   renderPlanets();
   
@@ -108,7 +105,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode sun{"Sun", std::make_shared<Node>(sunH)};
   sun.setGeometry(planet_model);
   sun.setSize(1.0f);
-  sun.setPlanetColor(glm::vec3{0.96f, 0.9f, 0.22f});
+  sun.setPlanetColor(glm::vec3{0.096f, 0.09f, 0.022f});
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
@@ -121,7 +118,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode mercury("Mercury", std::make_shared<Node>(mercuryH));
   mercury.setGeometry(planet_model);
   mercury.setSize(0.07f);
-  mercury.setPlanetColor(glm::vec3{0.35f, 0.33f, 0.3f});
+  mercury.setPlanetColor(glm::vec3{0.35f, 0.33f, 0.0f});
   mercuryH.addChild(std::make_shared<GeometryNode>(mercury));
   scenegraphList_.push_back(std::make_shared<Node>(mercuryH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(mercury));
@@ -146,7 +143,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode earth("Earth", std::make_shared<Node>(earthH));
   earth.setGeometry(planet_model);
   earth.setSize(0.17f);
-  earth.setPlanetColor(glm::vec3{0.0f, 0.32f, 0.65f});
+  earth.setPlanetColor(glm::vec3{1.0f, 0.0f, 0.0f});
   earthH.addChild(std::make_shared<GeometryNode>(earth));
   scenegraphList_.push_back(std::make_shared<Node>(earthH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(earth));
@@ -159,7 +156,7 @@ void ApplicationSolar::initializeScenegraph() {
   moon.setGeometry(planet_model);
   moon.setSize(0.05f);
   moon.setIsMoon(true);
-  moon.setPlanetColor(glm::vec3{1.0f, 0.99f, 0.84f});
+  moon.setPlanetColor(glm::vec3{0.09f, 0.2f, 0.1f});
 
 
   earthH.addChild(std::make_shared<Node>(moonH));
@@ -174,7 +171,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode mars("Mars", std::make_shared<Node>(marsH));
   mars.setGeometry(planet_model);
   mars.setSize(0.12f);
-  mars.setPlanetColor(glm::vec3{0.5f, 0.0f, 0.0f});
+  mars.setPlanetColor(glm::vec3{0.5f, 0.2f, 0.09f});
   marsH.addChild(std::make_shared<GeometryNode>(mars));
   scenegraphList_.push_back(std::make_shared<Node>(marsH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(mars));
@@ -296,7 +293,6 @@ void ApplicationSolar::renderPlanets() const {
 
       glm::mat4 planetMatrix = planet->getLocalTransform();
       auto parent = planet->getParent();
-      auto color = planet->getPlanetColor();
       //int depth = 2;
 
       if(planet->getIsMoon() == true){
@@ -317,9 +313,9 @@ void ApplicationSolar::renderPlanets() const {
       glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
       
       glUseProgram(m_shaders.at("planet").handle);
-
+      
       // load planet color in the shader (normalized with /255)
-      glUniform3f(m_shaders.at("planet").u_locs.at("diffCol"), (color.x + 0), (color.y + 1), (color.z + 2));
+      glUniform3f(m_shaders.at("planet").u_locs.at("diffCol"), (planet->getPlanetColor().x), (planet->getPlanetColor().y), (planet->getPlanetColor().z ));
       
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                          1, GL_FALSE, glm::value_ptr(planetMatrix));
