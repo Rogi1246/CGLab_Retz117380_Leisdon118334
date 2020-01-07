@@ -27,7 +27,7 @@ void main() {
 
   //Shading-values
   vec3 ambCol = diffCol;
-  float brightness = 25.0f; //and make it shine
+  float brightness = 15.0f; //and make it shine
 
   vec3 normal = normalize(pass_Normal);
   //vec from pixel to pointlight
@@ -42,14 +42,14 @@ void main() {
 
 
   //dot-products
-  //float diffAngle = max(dot(light, normal), 0.0);
   //brightness/intensity, is it in front/back
   float diffAngle = max(dot(light, normal), 0.0);
   
-  //float specAngle = pow(max(0.0, dot(normal, halfWayThere)), brightness);
   float specAngle = max(dot(halfWayThere, normal), 0.0);
   float specc = pow(specAngle,brightness);
-  //cel-shader
+  
+  //cel-shading
+  //if 2 is pressed, activate cel-shading
   if(shaderSwitch == 2) {
     //discretize diffAngle to determine intensity
     //NO smoothness, only levels of brightness
@@ -67,11 +67,9 @@ void main() {
   }
 
   //ambiance, diffuse, specular
-  
   vec3 ambient = ambCol;
-  vec3 diffuse = diffCol * diffAngle * lightCol * (lightInt / dist);
-  vec3 specular = specc * specCol * lightCol * (lightInt / dist);
-  //float specular = pow(specAngle, 16.0);
+  vec3 diffuse = diffAngle * diffCol * lightCol * (lightInt / dist);
+  vec3 specular = specc * (0.8)*specCol * lightCol * (lightInt / dist);
   //resulting value
   vec3 finalCol = (ambient + diffuse + specular)*outLine;
   out_Color = vec4(finalCol, 1.0);

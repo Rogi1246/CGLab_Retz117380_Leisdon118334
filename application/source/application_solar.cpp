@@ -92,7 +92,7 @@ void ApplicationSolar::initializeScenegraph() {
 
   //set lightColor and create PointLight
   glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
-  pointLight = {"light", std::make_shared<Node>(root), lightColor, 2.0};
+  pointLight = {"light", std::make_shared<Node>(root), lightColor, 1.0};
   scenegraphList_.push_back(std::make_shared<PointLightNode>(pointLight));
   //add PointLight to root
   //root.addChild(std::make_shared<PointLightNode>(pointLight));
@@ -156,7 +156,7 @@ void ApplicationSolar::initializeScenegraph() {
   moon.setGeometry(planet_model);
   moon.setSize(0.05f);
   moon.setIsMoon(true);
-  moon.setPlanetColor(glm::vec3{0.09f, 0.2f, 0.1f});
+  moon.setPlanetColor(glm::vec3{0.1f, 0.2f, 0.1f});
 
 
   earthH.addChild(std::make_shared<Node>(moonH));
