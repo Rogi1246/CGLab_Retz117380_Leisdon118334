@@ -3,79 +3,47 @@
 in vec3 pass_Normal;
 in vec3 pass_FragmentPos;
 in vec3 pass_CameraPos;
-//in vec3 Planet_Color;
 
 out vec4 out_Color;
 
-//light-values
-//uniform vec3 lightSrc;
+//incoming light-values
+uniform vec3 lightSrc;
 uniform vec3 lightCol;
 uniform float lightInt;
-//diffuse Color and shaderSwitch uniforms
+//diffuse Color
 uniform vec3 diffCol;
-uniform int shaderSwitch; //b-phong : 1 | cel : 2
 
-//cel-shading stuff, change for more shading levels
-const int shadeLevel = 3;
-float outLine = 1.0;
+//shaderSwitch -- celshading stuff
+// uniform int shaderSwitch; //b-phong : 1 | cel : 2
+//const int shadeLevel = 3;
+//float outLine = 1.0;
 
-const vec3 lightSrc = vec3(0.0, 0.0, 0.0);
+//define specular color
 const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
 
-void main() {
-  //out_Color = vec4(abs(normalize(pass_Normal)),1.0);
 
-  //Shading-values
-  vec3 ambCol = diffCol;
-  float brightness = 15.0f; //and make it shine
+void main() {
+  //float reflect = 10.0; // rho-value
+  float brightness = 0.5;  //alpha -- aka specular strength
+
+  //ambient value
+  vec3 ambiance = 0.1 * lightCol * diffCol;
 
   vec3 normal = normalize(pass_Normal);
-  //vec from pixel to pointlight
-  vec3 lightDir = lightSrc - pass_FragmentPos;
-  vec3 light = normalize(lightDir);
-  //dist from pixel to pointlight so the intensity gets weaker with increased distance
-  float dist = length(lightDir);
-  //vec from pixel to camera
-  vec3 cam = normalize(pass_CameraPos - pass_FragmentPos);
-  //direction of reflection basically (angle)
-  vec3 halfWayThere = normalize(cam + light);
+  vec3 lightDirection = normalize(lightSrc - pass_FragmentPos);
 
+  //calculate actual diffuse impact
+  //since dot product becomes negative when angle is above 90
+  //use max function to return highest of both parameters
+  float diff = max(dot(normal, lightDirection), 0.0);
+  vec3 diffuse = diff * lightCol;
 
-  //dot-products
-  //brightness/intensity, is it in front/back
-  float diffAngle = max(dot(light, normal), 0.0);
-  
-  float specAngle = max(dot(halfWayThere, normal), 0.0);
-  float specc = pow(specAngle,brightness);
-  
-  //cel-shading
-  //if 2 is pressed, activate cel-shading
-  if(shaderSwitch == 2) {
-    //discretize diffAngle to determine intensity
-    //NO smoothness, only levels of brightness
-    diffAngle = floor(diffAngle * shadeLevel) / shadeLevel;
+  //specular light
+  vec3 cameraDirection = normalize(pass_CameraPos - pass_FragmentPos);
+  vec3 halfwayDirection = normalize(lightDirection + cameraDirection);
+  float spec = pow(max(dot(normal, halfwayDirection), 0.0), brightness);
+  vec3 specular = lightCol * spec;
 
-    //discretize specLight
-    if(specAngle < 0.5) {
-      specAngle = 0.0;
-    }
-
-    //outLine
-    if(max(dot(normal, cam), 0.0) < 0.25) {
-      outLine = 0.0;
-    }
-  }
-
-  //ambiance, diffuse, specular
-  vec3 ambient = ambCol;
-  vec3 diffuse = diffAngle * diffCol * lightCol * (lightInt / dist);
-  vec3 specular = specc * (0.8)*specCol * lightCol * (lightInt / dist);
-  //resulting value
-  vec3 finalCol = (ambient + diffuse + specular)*outLine;
-  out_Color = vec4(finalCol, 1.0);
-  
-  //out color just the planet color at the moment ^^
-  //out_Color = vec4(Planet_Color, 1.0);
-  
-  //out_Color = vec4(abs(normalize(pass_Normal)), 1.0);
+  vec3 result_col = (ambiance+diffuse+specular)*diffCol;
+  out_Color = vec4(result_col, 1.0);
 }
