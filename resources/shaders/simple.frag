@@ -23,7 +23,6 @@ const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
 
 
 void main() {
-  //float reflect = 10.0; // rho-value
   float brightness = 0.5;  //alpha -- aka specular strength
 
   //ambient value
