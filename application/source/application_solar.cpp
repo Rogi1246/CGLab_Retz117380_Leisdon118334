@@ -320,10 +320,11 @@ void ApplicationSolar::renderPlanets() const {
       // load planet color in the shader (normalized with /255)
       glUniform3f(m_shaders.at("planet").u_locs.at("diffCol"), (planet->getPlanetColor().x), (planet->getPlanetColor().y), (planet->getPlanetColor().z));
       
+      glUniform1i(m_shaders.at("planet").u_locs.at("is_sun"), planet->getIsSun());
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                          1, GL_FALSE, glm::value_ptr(planetMatrix));
 
-      glUniform1i(m_shaders.at("planet").u_locs.at("is_sun"), planet->getIsSun());
+      
       // extra matrix for normal transformation to keep them orthogonal to surface
       
       /*glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
@@ -369,6 +370,8 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["lightInt"] = -1;
   m_shaders.at("planet").u_locs["diffCol"] = -1;
   m_shaders.at("planet").u_locs["shaderSwitch"] = -1;
+  m_shaders.at("planet").u_locs["is_sun"] = -1;
+
 
   //have to do the same for stars
   //store in container

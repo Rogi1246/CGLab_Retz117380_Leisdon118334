@@ -15,6 +15,7 @@ uniform vec3 diffCol;
 
 //shaderSwitch -- celshading stuff
 uniform int shaderSwitch; //b-phong : 1 | cel : 2
+uniform int is_sun;
 const int shadeLevel = 3;
 float outLine = 1.0;
 
@@ -63,4 +64,8 @@ void main() {
 
   vec3 result_col = outLine*(ambiance+diffuse+specular)*diffCol;
   out_Color = vec4(result_col, 1.0);
+
+  if(is_sun == 1){
+    out_Color = vec4(diffCol,1);
+  }
 }
