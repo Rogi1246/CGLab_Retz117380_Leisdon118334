@@ -276,7 +276,8 @@ void ApplicationSolar::uploadUniforms() {
   glUniform3f(m_shaders.at("planet").u_locs.at("lightSrc"), 0.0f, 0.0f, 0.0f);
   //get the color of the pointLight
   glm::vec3 lightColorF = pointLight.getLightCol();
-  glUniform3f(m_shaders.at("planet").u_locs.at("lightCol"), (lightColorF.x + 0), (lightColorF.y + 1), (lightColorF.z + 2));
+  //maybe add +0,1,2 to xyz coord again? 
+  glUniform3f(m_shaders.at("planet").u_locs.at("lightCol"), (lightColorF.x), (lightColorF.y), (lightColorF.z));
   float lightIntF = pointLight.getLightInt();
   glUniform1f(m_shaders.at("planet").u_locs.at("lightInt"), lightIntF);
   glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"), 1);
@@ -511,7 +512,7 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"),1);
     uploadView();
   }
-  //Pressing 2 : CellShading
+  //Pressing 2 : CelShading
   else if (key == GLFW_KEY_2) {
     glUseProgram(m_shaders.at("planet").handle);
     glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"),2);
