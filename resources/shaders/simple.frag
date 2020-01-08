@@ -31,7 +31,7 @@ void main() {
 
   vec3 normal = normalize(pass_Normal);
   vec3 lightDirection = normalize(lightSrc - pass_FragmentPos);
-
+  float distance = length(lightDirection);
   //calculate actual diffuse impact
   //since dot product becomes negative when angle is above 90
   //use max function to return highest of both parameters
@@ -41,8 +41,12 @@ void main() {
   //specular light
   vec3 cameraDirection = normalize(pass_CameraPos - pass_FragmentPos);
   vec3 halfwayDirection = normalize(lightDirection + cameraDirection);
+  //so that's basically the difference to normal Phong
+  //measure angle between normal and halfway vec
+  //instead of angle betw. view direction and refl-vector
   float spec = pow(max(dot(normal, halfwayDirection), 0.0), brightness);
-  vec3 specular = lightCol * spec;
+  float what = lightInt / distance;
+  vec3 specular = spec * lightCol * what;
 
   //is KEY == 2 pressed : activate cel-shading
   if(shaderSwitch == 2) {
@@ -56,7 +60,7 @@ void main() {
     }
   }
 
-  vec3 diffuse = diff * lightCol;
+  vec3 diffuse = diff * lightCol * what;
 
   vec3 result_col = outLine*(ambiance+diffuse+specular)*diffCol;
   out_Color = vec4(result_col, 1.0);
