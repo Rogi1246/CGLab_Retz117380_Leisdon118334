@@ -106,6 +106,7 @@ void ApplicationSolar::initializeScenegraph() {
   sun.setGeometry(planet_model);
   sun.setSize(1.0f);
   sun.setPlanetColor(glm::vec3{0.9f, 0.9f, 0.0f});
+  sun.setIsSUn(1);
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
@@ -279,6 +280,7 @@ void ApplicationSolar::uploadUniforms() {
   float lightIntF = pointLight.getLightInt();
   glUniform1f(m_shaders.at("planet").u_locs.at("lightInt"), lightIntF);
   glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"), 1);
+  
   // bind shader to which to upload unforms
   // glUseProgram(m_shaders.at("planet").handle);
   // upload uniform values to new locations
@@ -320,6 +322,7 @@ void ApplicationSolar::renderPlanets() const {
       glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                          1, GL_FALSE, glm::value_ptr(planetMatrix));
 
+      glUniform1i(m_shaders.at("planet").u_locs.at("is_sun"), planet->getIsSun());
       // extra matrix for normal transformation to keep them orthogonal to surface
       
       /*glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),

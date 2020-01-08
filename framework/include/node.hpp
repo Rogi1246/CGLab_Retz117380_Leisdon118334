@@ -30,6 +30,7 @@ class Node{
         float getDistance() const;
         float getSize() const;
         bool getIsMoon() const;
+        int getIsSun() const;
 
 
         //Setter
@@ -40,6 +41,7 @@ class Node{
         void setDistance(float distance);
         void setSize(float size);
         void setIsMoon(bool is_moon);
+        void setIsSUn(int is_sun);
 
 
         //Adding and removing children
@@ -59,6 +61,7 @@ class Node{
         float rotation_sp_;
         float distance_;
         float size_;
+        int isSun_ = 0;
 
 };
 #endif 

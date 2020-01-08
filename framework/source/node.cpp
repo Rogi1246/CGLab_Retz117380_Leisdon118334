@@ -68,6 +68,9 @@ bool Node::getIsMoon() const{
     return is_moon_;
 }
 
+int Node::getIsSun() const{
+    return isSun_;
+}
 
 //Setter
 void Node::setParent(std::shared_ptr<Node> parent) {
@@ -95,6 +98,9 @@ void Node::setSize(float size) {
 }
 void Node::setIsMoon(bool is_moon) {
     is_moon_ = is_moon;
+}
+void Node::setIsSUn(int is_sun){
+    isSun_ = is_sun;
 }
 
 //Adding and removing children
