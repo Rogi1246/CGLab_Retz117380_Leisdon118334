@@ -14,9 +14,9 @@ uniform float lightInt;
 uniform vec3 diffCol;
 
 //shaderSwitch -- celshading stuff
-// uniform int shaderSwitch; //b-phong : 1 | cel : 2
-//const int shadeLevel = 3;
-//float outLine = 1.0;
+uniform int shaderSwitch; //b-phong : 1 | cel : 2
+const int shadeLevel = 3;
+float outLine = 1.0;
 
 //define specular color
 const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
@@ -36,7 +36,7 @@ void main() {
   //since dot product becomes negative when angle is above 90
   //use max function to return highest of both parameters
   float diff = max(dot(normal, lightDirection), 0.0);
-  vec3 diffuse = diff * lightCol;
+  
 
   //specular light
   vec3 cameraDirection = normalize(pass_CameraPos - pass_FragmentPos);
@@ -44,6 +44,20 @@ void main() {
   float spec = pow(max(dot(normal, halfwayDirection), 0.0), brightness);
   vec3 specular = lightCol * spec;
 
-  vec3 result_col = (ambiance+diffuse+specular)*diffCol;
+  //is KEY == 2 pressed : activate cel-shading
+  if(shaderSwitch == 2) {
+    //to get the smoothness out
+    float shade = floor(diff*shadeLevel) / shadeLevel;
+    diff = shade;
+    //the outline
+    //the bigger the threshold the thicker the outline
+    if(max(dot(normal, cameraDirection), 0.0) < 0.25) {
+      outLine = 0.0;
+    }
+  }
+
+  vec3 diffuse = diff * lightCol;
+
+  vec3 result_col = outLine*(ambiance+diffuse+specular)*diffCol;
   out_Color = vec4(result_col, 1.0);
 }
