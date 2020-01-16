@@ -105,7 +105,7 @@ void ApplicationSolar::initializeScenegraph() {
   GeometryNode sun{"Sun", std::make_shared<Node>(sunH)};
   sun.setGeometry(planet_model);
   sun.setSize(1.0f);
-  sun.setPlanetColor(glm::vec3{0.9f, 0.9f, 0.0f});
+  sun.setPlanetColor(glm::vec3{1.0f, 1.0f, 0.0f});
   sun.setIsSUn(1);
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
@@ -300,12 +300,12 @@ void ApplicationSolar::renderPlanets() const {
 
       if(planet->getIsMoon() == true){
         auto earthH = parent->getParent();
-        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * earthH->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * earthH->getRotationSpeed()/4, glm::vec3{0.0f, 1.0f, 0.0f}); 
         planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, earthH->getDistance()+0.2});
-        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/4, glm::vec3{0.0f, 1.0f, 0.0f}); 
         planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
       } else {
-        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+        planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/4, glm::vec3{0.0f, 1.0f, 0.0f}); 
         planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
       }
       //planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
@@ -421,6 +421,27 @@ void ApplicationSolar::initializeGeometry() {
 
   initializeScenegraph();
 }
+
+  void ApplicationSolar::loadTextures(){
+    pixel_data sun = texture_loader::file(m_resource_path + "textures/sun.png");
+    textures_.push_back(sun);
+  }
+
+  void ApplicationSolar::initializeTextures(){
+    for(int i = i;i<textures_.size(); ++i){
+      texture_object texture_obj;
+
+      //initialize Texture
+      glActiveTexture(GL_TEXTURE0);
+      glGenTextures(1, &texture_obj.handle);
+      glBindTexture(GL_TEXTURE_2D, texture_obj.handle);
+
+
+
+    }
+  }
+
+
 
   void ApplicationSolar::initializeStarGeometry() {
   model star_model;

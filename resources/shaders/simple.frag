@@ -24,19 +24,16 @@ const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
 
 
 void main() {
-  float brightness = 0.5;  //alpha -- aka specular strength
-
-  //ambient value
-  vec3 ambiance = 0.1 * lightCol * diffCol;
+  float brightness = 0.3;  //alpha -- aka specular strength
 
   vec3 normal = normalize(pass_Normal);
   vec3 lightDirection = normalize(lightSrc - pass_FragmentPos);
   float distance = length(lightDirection);
+
   //calculate actual diffuse impact
   //since dot product becomes negative when angle is above 90
   //use max function to return highest of both parameters
   float diff = max(dot(normal, lightDirection), 0.0);
-  
 
   //specular light
   vec3 cameraDirection = normalize(pass_CameraPos - pass_FragmentPos);
@@ -45,8 +42,18 @@ void main() {
   //measure angle between normal and halfway vec
   //instead of angle betw. view direction and refl-vector
   float spec = pow(max(dot(normal, halfwayDirection), 0.0), brightness);
-  float what = lightInt / distance;
-  vec3 specular = spec * lightCol * what;
+  //ratio between light intensity and distance to the planet
+  float lightRatio = lightInt / distance;
+
+  //ambient value
+  vec3 ambiance = 0.1 * lightCol * diffCol;
+
+  // final specular color
+  vec3 specular = spec * lightCol * lightRatio;
+
+  //final diffuse color
+  vec3 diffuse = diff * lightCol * lightRatio;
+
 
   //is KEY == 2 pressed : activate cel-shading
   if(shaderSwitch == 2) {
@@ -60,12 +67,12 @@ void main() {
     }
   }
 
-  vec3 diffuse = diff * lightCol * what;
 
   vec3 result_col = outLine*(ambiance+diffuse+specular)*diffCol;
   out_Color = vec4(result_col, 1.0);
 
   if(is_sun == 1){
-    out_Color = vec4(diffCol,1);
+    vec3 result_col = (ambiance+0.6+specular)*diffCol;
+    out_Color = vec4(result_col,1);
   }
 }

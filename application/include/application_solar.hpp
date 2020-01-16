@@ -8,6 +8,7 @@
 #include "scenegraph.hpp"
 #include "geometry_node.hpp"
 #include "point_light_node.hpp"
+#include "texture_loader.hpp"
 
 #include <vector>
 
@@ -42,6 +43,8 @@ class ApplicationSolar : public Application {
   void renderStars() const;
   // upload projection matrix
   void uploadProjection();
+  void loadTextures();
+  void initializeTextures();
   // upload view matrix
   void uploadView();
 
@@ -58,6 +61,7 @@ class ApplicationSolar : public Application {
   Scenegraph scenegraph_;
   std::list<std::shared_ptr<Node>> scenegraphList_;
   std::list<std::shared_ptr<GeometryNode>> scenegraphList_geometry_;
+  std::vector<pixel_data> textures_;
 };
 
 #endif
