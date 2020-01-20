@@ -32,7 +32,7 @@ class Node{
         float getSize() const;
         bool getIsMoon() const;
         int getIsSun() const;
-        texture_object getPlanetTexture() const;
+        
 
 
         //Setter
@@ -44,7 +44,7 @@ class Node{
         void setSize(float size);
         void setIsMoon(bool is_moon);
         void setIsSUn(int is_sun);
-        void setPlanetTexture(texture_object const& texture);
+        
 
 
         //Adding and removing children
@@ -65,7 +65,7 @@ class Node{
         float distance_;
         float size_;
         int isSun_ = 0;
-        texture_object planet_Texture_;
+
 
 };
 #endif 

@@ -72,9 +72,7 @@ int Node::getIsSun() const{
     return isSun_;
 }
 
-texture_object Node::getPlanetTexture() const {
-    return planet_Texture_;
-}
+
 
 //Setter
 void Node::setParent(std::shared_ptr<Node> parent) {
@@ -107,9 +105,7 @@ void Node::setIsSUn(int is_sun){
     isSun_ = is_sun;
 }
 
-void Node::setPlanetTexture(texture_object const& texture) {
-    planet_Texture_ = texture;
-}
+
 
 //Adding and removing children
 void Node::addChild(std::shared_ptr<Node> child) {

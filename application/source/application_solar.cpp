@@ -66,7 +66,7 @@ void ApplicationSolar::loadTextures(){
 
 void ApplicationSolar::initializeTextures(){
   loadTextures();
-    for(int i = i;i<textures_.size(); ++i){
+    for(int i = 0; i<textures_.size(); ++i){
       texture_object texture;
 
       texture.target = GL_TEXTURE0;
@@ -135,7 +135,7 @@ void ApplicationSolar::initializeScenegraph() {
   sun.setSize(1.0f);
   sun.setPlanetColor(glm::vec3{1.0f, 1.0f, 0.0f});
   sun.setIsSUn(1);
-  // sun.setPlanetTexture(texObjects_[1]); // THIS BITCH NOT WORKING -- SEGMENTATION FAULT WHEN LOADING TEXTURE
+  sun.setPlanetTexture(texObjects_[0]); // THIS BITCH NOT WORKING -- SEGMENTATION FAULT WHEN LOADING TEXTURE
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));

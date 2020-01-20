@@ -13,8 +13,11 @@ class GeometryNode : public Node {
         GeometryNode(std::string name, std::shared_ptr<Node>(parent));
         model getGeometry() const;
         glm::vec3 getPlanetColor() const;
+        texture_object getPlanetTexture() const;
+        
         void setGeometry(model geometryModel);
         void setPlanetColor(glm::vec3 planet_color);
+        void setPlanetTexture(texture_object const& texture);
 
     private:
         model geometryModel_;
@@ -23,6 +26,7 @@ class GeometryNode : public Node {
         float diameter_;
         float rotation_self_;
         glm::vec3 planet_color_;
+        texture_object planet_Texture_;
 
 
 };
