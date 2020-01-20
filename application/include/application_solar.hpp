@@ -62,6 +62,7 @@ class ApplicationSolar : public Application {
   std::list<std::shared_ptr<Node>> scenegraphList_;
   std::list<std::shared_ptr<GeometryNode>> scenegraphList_geometry_;
   std::vector<pixel_data> textures_;
+  std::vector<texture_object> texObjects_;
 };
 
 #endif
