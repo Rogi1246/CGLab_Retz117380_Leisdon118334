@@ -3,7 +3,7 @@
 in vec3 pass_Normal;
 in vec3 pass_FragmentPos;
 in vec3 pass_CameraPos;
-//in vec2 pass_TextCoord;
+in vec2 pass_TextCoord;
 
 out vec4 out_Color;
 
@@ -26,8 +26,8 @@ const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
 
 
 void main() {
-  //vec4 textuCol = texture(textures, pass_TextCoord);
-  //vec3 sunCol = vec3(textuCol).xyz;
+  vec4 textuCol = texture(textures, pass_TextCoord);
+  vec3 sunCol = vec3(textuCol).xyz;
 
   float brightness = 0.3;  //alpha -- aka specular strength
 
@@ -77,7 +77,7 @@ void main() {
   out_Color = vec4(result_col, 1.0);
 
   if(is_sun == 1){
-    vec3 result_col = ambiance; //sunCol);  //(ambiance+0.6+specular)*diffCol;
+    vec3 result_col = ambiance + sunCol;  //(ambiance+0.6+specular)*diffCol;
     out_Color = vec4(result_col,1);
   }
 }

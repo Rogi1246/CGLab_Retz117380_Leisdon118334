@@ -34,7 +34,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
 {
 
   initializeGeometry();
-  initializeTextures();
+  
   initializeStarGeometry();
   initializeShaderPrograms();
   initializeScenegraph();
@@ -61,8 +61,8 @@ void ApplicationSolar::render() const {
 
 void ApplicationSolar::loadTextures(){
   std::cout << "in texture loader: " << std::endl;
-    //pixel_data sun = texture_loader::file(m_resource_path + "textures/sun.png");
-    //textures_.push_back(sun);
+    pixel_data sun = texture_loader::file(m_resource_path + "textures/sun.png");
+    textures_.push_back(sun);
     pixel_data mercury = texture_loader::file(m_resource_path + "textures/mercury.jpg");
     textures_.push_back(mercury);
   }
@@ -119,6 +119,7 @@ void ApplicationSolar::uploadProjection() {
 }
 
 void ApplicationSolar::initializeScenegraph() {
+  initializeTextures();
   std::cout <<"tex objects size: " << texObjects_.size() << std::endl;
   model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
 
@@ -141,7 +142,7 @@ void ApplicationSolar::initializeScenegraph() {
   sun.setSize(1.0f);
   sun.setPlanetColor(glm::vec3{1.0f, 1.0f, 0.0f});
   sun.setIsSUn(1);
-  //sun.setPlanetTexture(texObjects_[0]); // THIS BITCH NOT WORKING -- SEGMENTATION FAULT WHEN LOADING TEXTURE
+  sun.setPlanetTexture(texObjects_[1]); // THIS BITCH NOT WORKING -- SEGMENTATION FAULT WHEN LOADING TEXTURE
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
@@ -156,7 +157,7 @@ void ApplicationSolar::initializeScenegraph() {
   mercury.setSize(0.07f);
   mercury.setPlanetColor(glm::vec3{0.4f, 0.4f, 0.7f});
   
-  //mercury.setPlanetTexture(texObjects_[0]);
+  mercury.setPlanetTexture(texObjects_[1]);
   mercuryH.addChild(std::make_shared<GeometryNode>(mercury));
   scenegraphList_.push_back(std::make_shared<Node>(mercuryH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(mercury));
@@ -319,10 +320,10 @@ void ApplicationSolar::uploadUniforms() {
   glUniform1f(m_shaders.at("planet").u_locs.at("lightInt"), lightIntF);
   glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"), 1);
   
-  //int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
-  //glUniform1i(sampler_location, 0);
+  int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
+  glUniform1i(sampler_location, 0);
   // bind shader to which to upload unforms
-  // glUseProgram(m_shaders.at("planet").handle);
+   glUseProgram(m_shaders.at("planet").handle);
   // upload uniform values to new locations
   uploadView();
   uploadProjection();
@@ -363,15 +364,15 @@ void ApplicationSolar::renderPlanets() const {
                          1, GL_FALSE, glm::value_ptr(planetMatrix));
 
       //OKAY lets try and bind proper texture-stuff
-      //if(planet->getIsSun() == 1) {
-      //  glActiveTexture(GL_TEXTURE0);
-      //  glBindTexture(GL_TEXTURE_2D, planet->getPlanetTexture().handle);
-      //  int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
-//
-      //  glUseProgram(m_shaders.at("planet").handle);
-      //  glUniform1i(sampler_location,0);
-      //}
-      // extra matrix for normal transformation to keep them orthogonal to surface
+      if(planet->getIsSun() == 1) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, planet->getPlanetTexture().handle);
+        int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
+
+        glUseProgram(m_shaders.at("planet").handle);
+        glUniform1i(sampler_location,0);
+      }
+       //extra matrix for normal transformation to keep them orthogonal to surface
       
       /*glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
                          1, GL_FALSE, glm::value_ptr(normal_matrix));
@@ -415,7 +416,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["lightCol"] = -1;
   m_shaders.at("planet").u_locs["lightInt"] = -1;
   m_shaders.at("planet").u_locs["diffCol"] = -1;
-  //m_shaders.at("planet").u_locs["textures"] = -1;
+  m_shaders.at("planet").u_locs["textures"] = -1;
   m_shaders.at("planet").u_locs["shaderSwitch"] = -1;
   m_shaders.at("planet").u_locs["is_sun"] = -1;
 
