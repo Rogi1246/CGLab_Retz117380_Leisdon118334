@@ -32,12 +32,11 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
 {
-
+  initializeTextures();
   initializeGeometry();
   
   initializeStarGeometry();
   initializeShaderPrograms();
-  initializeScenegraph();
   
 }
 
@@ -60,7 +59,7 @@ void ApplicationSolar::render() const {
 }
 
 void ApplicationSolar::loadTextures(){
-  std::cout << "in texture loader: " << std::endl;
+  //std::cout << "in texture loader: " << std::endl;
     pixel_data sun = texture_loader::file(m_resource_path + "textures/sun.png");
     textures_.push_back(sun);
     pixel_data mercury = texture_loader::file(m_resource_path + "textures/mercury.jpg");
@@ -69,7 +68,7 @@ void ApplicationSolar::loadTextures(){
 
 void ApplicationSolar::initializeTextures(){
   loadTextures();
-  std::cout  << "textures_ size: "<< textures_.size() << std::endl;
+  //std::cout  << "textures_ size: "<< textures_.size() << std::endl;
     for(int i = 0; i<textures_.size(); ++i){
       texture_object texture = texture_object{};
 
@@ -89,38 +88,9 @@ void ApplicationSolar::initializeTextures(){
     }
   }
 
-void ApplicationSolar::uploadView() {
-  // vertices are transformed in camera space, so camera transform must be inverted
-  glm::fmat4 view_matrix = glm::inverse(m_view_transform);
-  // upload matrix to gpu
-  glUseProgram(m_shaders.at("planet").handle);
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ViewMatrix"),
-                       1, GL_FALSE, glm::value_ptr(view_matrix));
-
-  //bind shader & upload ViewMatrix for stars
-  printf("star view uploading! \n");
-  glUseProgram(m_shaders.at("star").handle);
-  glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ViewMatrix"),
-                       1, GL_FALSE, glm::value_ptr(view_matrix));
-}
-
-void ApplicationSolar::uploadProjection() {
-  // upload matrix to gpu
-  printf("planet projection uploading! \n");
-  glUseProgram(m_shaders.at("planet").handle);
-  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ProjectionMatrix"),
-                       1, GL_FALSE, glm::value_ptr(m_view_projection));
-
-  //have to bind the shaders & upload the ProjectionMatrix 
-  printf("star projection uploading! \n");
-  glUseProgram(m_shaders.at("star").handle);
-  glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"), 
-                      1, GL_FALSE, glm::value_ptr(m_view_projection));
-}
-
 void ApplicationSolar::initializeScenegraph() {
-  initializeTextures();
-  std::cout <<"tex objects size: " << texObjects_.size() << std::endl;
+  
+  //std::cout <<"tex objects size: " << texObjects_.size() << std::endl;
   model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
 
   Node root("Root",nullptr);
@@ -142,7 +112,7 @@ void ApplicationSolar::initializeScenegraph() {
   sun.setSize(1.0f);
   sun.setPlanetColor(glm::vec3{1.0f, 1.0f, 0.0f});
   sun.setIsSUn(1);
-  sun.setPlanetTexture(texObjects_[1]); // THIS BITCH NOT WORKING -- SEGMENTATION FAULT WHEN LOADING TEXTURE
+  sun.setPlanetTexture(texObjects_[0]); // THIS BITCH NOT WORKING -- SEGMENTATION FAULT WHEN LOADING TEXTURE
   sunH.addChild(std::make_shared<GeometryNode>(sun));
   scenegraphList_.push_back(std::make_shared<Node>(sunH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(sun));
@@ -304,30 +274,7 @@ void ApplicationSolar::initializeScenegraph() {
 
 }
 
-// update uniform locations
-void ApplicationSolar::uploadUniforms() { 
-  //binding the planet-shader-programs
-  glUseProgram(m_shaders.at("planet").handle);
-
-  //3f 3 float values, 1f 1 float value and so on
-  //set the light-source (at the uniform positions)
-  glUniform3f(m_shaders.at("planet").u_locs.at("lightSrc"), 0.0f, 0.0f, 0.0f);
-  //get the color of the pointLight
-  glm::vec3 lightColorF = pointLight.getLightCol();
-  //maybe add +0,1,2 to xyz coord again? 
-  glUniform3f(m_shaders.at("planet").u_locs.at("lightCol"), (lightColorF.x), (lightColorF.y), (lightColorF.z));
-  float lightIntF = pointLight.getLightInt();
-  glUniform1f(m_shaders.at("planet").u_locs.at("lightInt"), lightIntF);
-  glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"), 1);
-  
-  int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
-  glUniform1i(sampler_location, 0);
-  // bind shader to which to upload unforms
-   glUseProgram(m_shaders.at("planet").handle);
-  // upload uniform values to new locations
-  uploadView();
-  uploadProjection();
-}
+/////////////////////// RENDER METHODS /////////////////////////////////////////////////////////
 
 void ApplicationSolar::renderPlanets() const {
 
@@ -399,7 +346,65 @@ void ApplicationSolar::renderStars() const {
   glDrawArrays(star_object.draw_mode, gl::GLint(0), star_object.num_elements);
 }
 
-///////////////////////////// intialisation functions /////////////////////////
+//////////////////// UPLOAD FUNCTIONS //////////////////////////////////////////////////////////
+// update uniform locations
+void ApplicationSolar::uploadUniforms() { 
+  //binding the planet-shader-programs
+  glUseProgram(m_shaders.at("planet").handle);
+
+  //3f 3 float values, 1f 1 float value and so on
+  //set the light-source (at the uniform positions)
+  glUniform3f(m_shaders.at("planet").u_locs.at("lightSrc"), 0.0f, 0.0f, 0.0f);
+  //get the color of the pointLight
+  glm::vec3 lightColorF = pointLight.getLightCol();
+  //maybe add +0,1,2 to xyz coord again? 
+  glUniform3f(m_shaders.at("planet").u_locs.at("lightCol"), (lightColorF.x), (lightColorF.y), (lightColorF.z));
+  float lightIntF = pointLight.getLightInt();
+  glUniform1f(m_shaders.at("planet").u_locs.at("lightInt"), lightIntF);
+  glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"), 1);
+  
+  int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
+  glUniform1i(sampler_location, 0);
+  // bind shader to which to upload unforms
+   glUseProgram(m_shaders.at("planet").handle);
+  // upload uniform values to new locations
+  uploadView();
+  uploadProjection();
+}
+
+
+void ApplicationSolar::uploadView() {
+  // vertices are transformed in camera space, so camera transform must be inverted
+  glm::fmat4 view_matrix = glm::inverse(m_view_transform);
+  // upload matrix to gpu
+  glUseProgram(m_shaders.at("planet").handle);
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ViewMatrix"),
+                       1, GL_FALSE, glm::value_ptr(view_matrix));
+
+  //bind shader & upload ViewMatrix for stars
+  //printf("star view uploading! \n");
+  glUseProgram(m_shaders.at("star").handle);
+  glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ViewMatrix"),
+                       1, GL_FALSE, glm::value_ptr(view_matrix));
+}
+
+void ApplicationSolar::uploadProjection() {
+  // upload matrix to gpu
+  printf("planet projection uploading! \n");
+  glUseProgram(m_shaders.at("planet").handle);
+  glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ProjectionMatrix"),
+                       1, GL_FALSE, glm::value_ptr(m_view_projection));
+
+  //have to bind the shaders & upload the ProjectionMatrix 
+  printf("star projection uploading! \n");
+  glUseProgram(m_shaders.at("star").handle);
+  glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"), 
+                      1, GL_FALSE, glm::value_ptr(m_view_projection));
+}
+
+
+
+///////////////////////////// intialisation functions /////////////////////////////////////////
 // load shader sources
 void ApplicationSolar::initializeShaderPrograms() {
   // store shader program objects in container
@@ -432,7 +437,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // load models
 void ApplicationSolar::initializeGeometry() {
-  model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
+  model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::TEXCOORD);
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);
@@ -454,6 +459,8 @@ void ApplicationSolar::initializeGeometry() {
   glEnableVertexAttribArray(1);
   // second attribute is 3 floats with no offset & stride
   glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::NORMAL]);
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::TEXCOORD]);
 
    // generate generic buffer
   glGenBuffers(1, &planet_object.element_BO);
