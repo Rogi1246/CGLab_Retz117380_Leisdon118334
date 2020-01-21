@@ -27,9 +27,11 @@ const vec3 specCol = vec3(1.0, 1.0, 1.0); //make it white
 
 void main() {
   vec4 textuCol = texture(textures, pass_TextCoord);
-  vec3 sunCol = vec3(textuCol).xyz;
+  vec3 planetCol = vec3(textuCol).xyz;
 
-  float brightness = 0.3;  //alpha -- aka specular strength
+  //set diffuse color to planet color
+
+  float brightness = 0.2;  //alpha -- aka specular strength
 
   vec3 normal = normalize(pass_Normal);
   vec3 lightDirection = normalize(lightSrc - pass_FragmentPos);
@@ -51,7 +53,7 @@ void main() {
   float lightRatio = lightInt / distance;
 
   //ambient value
-  vec3 ambiance = 0.1 * lightCol * diffCol;
+  vec3 ambiance = 0.1 * lightCol * planetCol;
 
   // final specular color
   vec3 specular = spec * lightCol * lightRatio;
@@ -73,11 +75,11 @@ void main() {
   }
 
 
-  vec3 result_col = outLine*(ambiance+diffuse+specular)*diffCol;
+  vec3 result_col = outLine*(ambiance+diffuse+specular)*planetCol;
   out_Color = vec4(result_col, 1.0);
 
   if(is_sun == 1){
-    vec3 result_col = ambiance + sunCol;  //(ambiance+0.6+specular)*diffCol;
+    vec3 result_col = planetCol;  //(ambiance+0.6+specular)*diffCol;
     out_Color = vec4(result_col,1);
   }
 }

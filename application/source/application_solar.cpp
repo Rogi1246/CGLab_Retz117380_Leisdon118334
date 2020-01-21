@@ -60,10 +60,28 @@ void ApplicationSolar::render() const {
 
 void ApplicationSolar::loadTextures(){
   //std::cout << "in texture loader: " << std::endl;
-    pixel_data sun = texture_loader::file(m_resource_path + "textures/sun.png");
+    pixel_data sun = texture_loader::file(m_resource_path + "textures/sun2.png");
     textures_.push_back(sun);
-    pixel_data mercury = texture_loader::file(m_resource_path + "textures/mercury.jpg");
+    pixel_data mercury = texture_loader::file(m_resource_path + "textures/mercury.png");
     textures_.push_back(mercury);
+    pixel_data venus = texture_loader::file(m_resource_path + "textures/venus.png");
+    textures_.push_back(venus);
+    pixel_data earth = texture_loader::file(m_resource_path + "textures/earth.png");
+    textures_.push_back(earth);
+    pixel_data moon = texture_loader::file(m_resource_path + "textures/moon.png");
+    textures_.push_back(moon);
+    pixel_data mars = texture_loader::file(m_resource_path + "textures/mars.png");
+    textures_.push_back(mars);
+    pixel_data jupiter = texture_loader::file(m_resource_path + "textures/jupiter.png");
+    textures_.push_back(jupiter);
+    pixel_data saturn = texture_loader::file(m_resource_path + "textures/saturn.png");
+    textures_.push_back(saturn);
+    pixel_data uranus = texture_loader::file(m_resource_path + "textures/uranus.png");
+    textures_.push_back(uranus);
+    pixel_data neptune = texture_loader::file(m_resource_path + "textures/pepe2.png");
+    textures_.push_back(neptune);
+    pixel_data pluto = texture_loader::file(m_resource_path + "textures/pluto.png");
+    textures_.push_back(pluto);
   }
 
 void ApplicationSolar::initializeTextures(){
@@ -141,6 +159,7 @@ void ApplicationSolar::initializeScenegraph() {
   venus.setGeometry(planet_model);
   venus.setSize(0.12f);
   venus.setPlanetColor(glm::vec3{0.8f, 0.7f, 0.0f});
+  venus.setPlanetTexture(texObjects_[2]);
   venusH.addChild(std::make_shared<GeometryNode>(venus));
   scenegraphList_.push_back(std::make_shared<Node>(venusH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(venus));
@@ -153,6 +172,7 @@ void ApplicationSolar::initializeScenegraph() {
   earth.setGeometry(planet_model);
   earth.setSize(0.17f);
   earth.setPlanetColor(glm::vec3{0.51f, 0.15f, 0.7f});
+  earth.setPlanetTexture(texObjects_[3]);
   earthH.addChild(std::make_shared<GeometryNode>(earth));
   scenegraphList_.push_back(std::make_shared<Node>(earthH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(earth));
@@ -166,6 +186,7 @@ void ApplicationSolar::initializeScenegraph() {
   moon.setSize(0.05f);
   moon.setIsMoon(true);
   moon.setPlanetColor(glm::vec3{0.1f, 0.2f, 0.1f});
+  moon.setPlanetTexture(texObjects_[4]);
 
 
   earthH.addChild(std::make_shared<Node>(moonH));
@@ -181,6 +202,7 @@ void ApplicationSolar::initializeScenegraph() {
   mars.setGeometry(planet_model);
   mars.setSize(0.12f);
   mars.setPlanetColor(glm::vec3{0.5f, 0.2f, 0.09f});
+  mars.setPlanetTexture(texObjects_[5]);
   marsH.addChild(std::make_shared<GeometryNode>(mars));
   scenegraphList_.push_back(std::make_shared<Node>(marsH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(mars));
@@ -193,6 +215,7 @@ void ApplicationSolar::initializeScenegraph() {
   jupiter.setGeometry(planet_model);
   jupiter.setSize(0.52f);
   jupiter.setPlanetColor(glm::vec3{ 0.9f, 0.58f, 0.0f});
+  jupiter.setPlanetTexture(texObjects_[6]);
   jupiterH.addChild(std::make_shared<GeometryNode>(jupiter));
   scenegraphList_.push_back(std::make_shared<Node>(jupiterH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(jupiter));
@@ -206,6 +229,7 @@ void ApplicationSolar::initializeScenegraph() {
   saturn.setSize(0.47f);
   saturn.setRotationSpeed(0.5f);
   saturn.setPlanetColor(glm::vec3{ 0.9f, 0.75f, 0.54f});
+  saturn.setPlanetTexture(texObjects_[7]);
   saturnH.addChild(std::make_shared<GeometryNode>(saturn));
   scenegraphList_.push_back(std::make_shared<Node>(saturnH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(saturn));
@@ -218,6 +242,7 @@ void ApplicationSolar::initializeScenegraph() {
   uranus.setGeometry(planet_model);
   uranus.setSize(0.35f);
   uranus.setPlanetColor(glm::vec3{0.69f, 0.893f, 0.93f});
+  uranus.setPlanetTexture(texObjects_[8]);
   uranusH.addChild(std::make_shared<GeometryNode>(uranus));
   scenegraphList_.push_back(std::make_shared<Node>(uranusH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(uranus));
@@ -231,6 +256,7 @@ void ApplicationSolar::initializeScenegraph() {
   neptune.setGeometry(planet_model);
   neptune.setSize(0.3f);
   neptune.setPlanetColor(glm::vec3{0.69f, 0.81f, 0.93f});
+  neptune.setPlanetTexture(texObjects_[9]);
   neptuneH.addChild(std::make_shared<GeometryNode>(neptune));
   scenegraphList_.push_back(std::make_shared<Node>(neptuneH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(neptune));
@@ -243,6 +269,7 @@ void ApplicationSolar::initializeScenegraph() {
   pluto.setGeometry(planet_model);
   pluto.setSize(0.07f);
   pluto.setPlanetColor(glm::vec3{0.9f, 0.22f, 0.01f});
+  pluto.setPlanetTexture(texObjects_[10]);
   plutoH.addChild(std::make_shared<GeometryNode>(pluto));
   scenegraphList_.push_back(std::make_shared<Node>(plutoH));
   scenegraphList_.push_back(std::make_shared<GeometryNode>(pluto));
@@ -295,8 +322,9 @@ void ApplicationSolar::renderPlanets() const {
         planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * parent->getRotationSpeed()/4, glm::vec3{0.0f, 1.0f, 0.0f}); 
         planetMatrix = glm::translate(planetMatrix, glm::vec3{0.0f, 0.0f, parent->getDistance()+0.2});
       }
-      //planetMatrix = glm::rotate(planetMatrix, float(glfwGetTime()) * planet->getRotationSpeed()/2, glm::vec3{0.0f, 1.0f, 0.0f}); 
+     
       planetMatrix = glm::scale(planetMatrix, glm::vec3(planet->getSize(), planet->getSize(), planet->getSize()));
+      
 
       // glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform)*planetMatrix);
       glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
@@ -311,14 +339,14 @@ void ApplicationSolar::renderPlanets() const {
                          1, GL_FALSE, glm::value_ptr(planetMatrix));
 
       //OKAY lets try and bind proper texture-stuff
-      if(planet->getIsSun() == 1) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, planet->getPlanetTexture().handle);
-        int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
+      //if(planet->getIsSun() == 1) {
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, planet->getPlanetTexture().handle);
+      int sampler_location = glGetUniformLocation(m_shaders.at("planet").handle, "textures");
 
-        glUseProgram(m_shaders.at("planet").handle);
-        glUniform1i(sampler_location,0);
-      }
+      glUseProgram(m_shaders.at("planet").handle);
+      glUniform1i(sampler_location,0);
+      //}
        //extra matrix for normal transformation to keep them orthogonal to surface
       
       /*glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
@@ -583,7 +611,7 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   // mouse handling
 
-  float angle = 0.01f;
+  float angle = 0.04f;
   m_view_transform = glm::rotate(m_view_transform, angle, glm::vec3{-pos_y, -pos_x, 0.0f});
   uploadView();
 }
