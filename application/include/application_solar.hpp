@@ -44,6 +44,9 @@ class ApplicationSolar : public Application {
   // upload projection matrix
   void uploadProjection();
   void loadTextures();
+  // now adding Skybox methods
+  void initializeSkybox();
+  void drawSkybox() const;
   void initializeTextures();
   // upload view matrix
   void uploadView();
@@ -51,6 +54,8 @@ class ApplicationSolar : public Application {
   // cpu representation of model
   model_object planet_object;
   model_object star_object;
+  // add skybox as model
+  model_object skybox_object;
   
   // camera transform matrix
   glm::fmat4 m_view_transform;
@@ -63,6 +68,10 @@ class ApplicationSolar : public Application {
   std::list<std::shared_ptr<GeometryNode>> scenegraphList_geometry_;
   std::vector<pixel_data> textures_;
   std::vector<texture_object> texObjects_;
+  // need vector to hold pixel-data of skybox-tex
+  std::vector<pixel_data> skybox_contain_pixdata_;
+  // add skybox texture_object
+  texture_object skybox_texture_obj_;
 };
 
 #endif
