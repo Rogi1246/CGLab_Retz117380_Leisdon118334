@@ -1,5 +1,7 @@
 #version 150
 #extension GL_ARB_explicit_attrib_location : require
+// Khronos information about extension :
+// https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_explicit_attrib_location.txt
 // VAO attributes
 
 layout(location = 0) in vec4 in_Position;

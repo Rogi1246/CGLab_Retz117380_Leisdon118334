@@ -556,7 +556,7 @@ void ApplicationSolar::initializeGeometry() {
   glVertexAttribPointer(0, model::POSITION.components, model::POSITION.type, GL_FALSE, skybox_model.vertex_bytes, skybox_model.offsets[model::POSITION]);
   // generate generic buffer
   glGenBuffers(1, &skybox_object.element_BO);
-  // bind this as an vertex array buffer containing all attributes
+  // bind as an vertex array buffer containing all attributes
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skybox_object.element_BO);
   // configure currently bound array buffer
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, model::INDEX.size * skybox_model.indices.size(), skybox_model.indices.data(), GL_STATIC_DRAW);
@@ -567,30 +567,35 @@ void ApplicationSolar::initializeGeometry() {
 }
 
   void ApplicationSolar::initializeSkybox() {
+
+    /* used as reference : 
+    https://learnopengl.com/Advanced-OpenGL/Cubemaps
+    */
+
     // load the textures for the skybox
     // try with sequence they are looped through
     // POSITIVE_X RIGHT
-    pixel_data sideright = texture_loader::file(m_resource_path + "textures/right.png");
+    pixel_data sideright = texture_loader::file(m_resource_path + "textures/right2.png");
     skybox_contain_pixdata_.push_back(sideright);
     std::cout << "uploaded right pxd" << std::endl;
     //NEGATIVE_X LEFT
-    pixel_data sideleft = texture_loader::file(m_resource_path + "textures/left.png");
+    pixel_data sideleft = texture_loader::file(m_resource_path + "textures/left2.png");
     skybox_contain_pixdata_.push_back(sideleft);
     std::cout << "uploaded left pxd" << std::endl;
     //POSITIVE_Y TOP
-    pixel_data up = texture_loader::file(m_resource_path + "textures/top.png");
+    pixel_data up = texture_loader::file(m_resource_path + "textures/top2.png");
     skybox_contain_pixdata_.push_back(up);
     std::cout << "uploaded top pxd" << std::endl;
     //NEGATIVE_Y BOTTOM
-    pixel_data down = texture_loader::file(m_resource_path + "textures/bottom.png");
+    pixel_data down = texture_loader::file(m_resource_path + "textures/bottom2.png");
     skybox_contain_pixdata_.push_back(down);
     std::cout << "uploaded bottom pxd" << std::endl;
     //POSITIVE_Z BACK
-    pixel_data back = texture_loader::file(m_resource_path + "textures/back.png");
+    pixel_data back = texture_loader::file(m_resource_path + "textures/back2.png");
     skybox_contain_pixdata_.push_back(back);
     std::cout << "uploaded back pxd" << std::endl;
     //NEGATIVE_Z FRONT
-    pixel_data front = texture_loader::file(m_resource_path + "textures/front.png");
+    pixel_data front = texture_loader::file(m_resource_path + "textures/front2.png");
     skybox_contain_pixdata_.push_back(front);
     std::cout << "uploaded front pxd" << std::endl;
 
