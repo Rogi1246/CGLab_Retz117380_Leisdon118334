@@ -568,24 +568,31 @@ void ApplicationSolar::initializeGeometry() {
 
   void ApplicationSolar::initializeSkybox() {
     // load the textures for the skybox
-    pixel_data back = texture_loader::file(m_resource_path + "textures/back.png");
-    skybox_contain_pixdata_.push_back(back);
-    std::cout << "uploaded back pxd" << std::endl;
-    pixel_data front = texture_loader::file(m_resource_path + "textures/front.png");
-    skybox_contain_pixdata_.push_back(front);
-    std::cout << "uploaded front pxd" << std::endl;
-    pixel_data sideleft = texture_loader::file(m_resource_path + "textures/left.png");
-    skybox_contain_pixdata_.push_back(sideleft);
-    std::cout << "uploaded left pxd" << std::endl;
+    // try with sequence they are looped through
+    // POSITIVE_X RIGHT
     pixel_data sideright = texture_loader::file(m_resource_path + "textures/right.png");
     skybox_contain_pixdata_.push_back(sideright);
     std::cout << "uploaded right pxd" << std::endl;
+    //NEGATIVE_X LEFT
+    pixel_data sideleft = texture_loader::file(m_resource_path + "textures/left.png");
+    skybox_contain_pixdata_.push_back(sideleft);
+    std::cout << "uploaded left pxd" << std::endl;
+    //POSITIVE_Y TOP
     pixel_data up = texture_loader::file(m_resource_path + "textures/top.png");
     skybox_contain_pixdata_.push_back(up);
     std::cout << "uploaded top pxd" << std::endl;
+    //NEGATIVE_Y BOTTOM
     pixel_data down = texture_loader::file(m_resource_path + "textures/bottom.png");
     skybox_contain_pixdata_.push_back(down);
     std::cout << "uploaded bottom pxd" << std::endl;
+    //POSITIVE_Z BACK
+    pixel_data back = texture_loader::file(m_resource_path + "textures/back.png");
+    skybox_contain_pixdata_.push_back(back);
+    std::cout << "uploaded back pxd" << std::endl;
+    //NEGATIVE_Z FRONT
+    pixel_data front = texture_loader::file(m_resource_path + "textures/front.png");
+    skybox_contain_pixdata_.push_back(front);
+    std::cout << "uploaded front pxd" << std::endl;
 
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &skybox_texture_obj_.handle);
