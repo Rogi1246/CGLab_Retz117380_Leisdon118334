@@ -29,6 +29,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
  ,planet_object{}
  ,star_object{}
+ // add skybox object
  ,skybox_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
@@ -589,6 +590,7 @@ void ApplicationSolar::initializeGeometry() {
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &skybox_texture_obj_.handle);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture_obj_.handle);
+    // The WARP_S/T/R set the warping methods for the textures s/t/r coordinates
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -596,6 +598,9 @@ void ApplicationSolar::initializeGeometry() {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     for(unsigned int i = 0; i < skybox_contain_pixdata_.size(); ++i) {
+      // starting off with GL_TEXTURE_CUBE_MAP_POSITIVE_X and incrementing it with +i so it will loop through the
+      // texture targets 
+      // POSITIVE_X being right, NEGATIVE_X being left etc. etc.
       glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, skybox_contain_pixdata_[i].channels,
                     (GLsizei)skybox_contain_pixdata_[i].width, (GLsizei)skybox_contain_pixdata_[i].height,
                     0, skybox_contain_pixdata_[i].channels, skybox_contain_pixdata_[i].channel_type, skybox_contain_pixdata_[i].ptr());
