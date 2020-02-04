@@ -31,12 +31,16 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,star_object{}
  // add skybox object
  ,skybox_object{}
+ // screenquad object
+ ,screenquad_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
 {
   initializeTextures();
   initializeSkybox();
   initializeGeometry();
+  initializeFrameBuffer();
+  initializeScreenquad();
   
   initializeStarGeometry();
   initializeShaderPrograms();
@@ -53,12 +57,41 @@ ApplicationSolar::~ApplicationSolar() {
   glDeleteBuffers(1, &star_object.vertex_BO);
   glDeleteBuffers(1, &star_object.element_BO);
   glDeleteVertexArrays(1, &star_object.vertex_AO);
+
+  //finally add deletion of textures 
+  //planets
+  for(int i = 0; i < texObjects_.size(); i++) {
+    glDeleteTextures(1, &texObjects_[i].handle);
+  }
+
+  // delete 
+  glDeleteBuffers(1, &screenquad_object.vertex_BO);
+  glDeleteBuffers(1, &screenquad_object.element_BO);
+  glDeleteVertexArrays(1,&screenquad_object.vertex_AO);
+
 }
 
 void ApplicationSolar::render() const {
+
+  // binding the new FrameBuffer
+  glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+  // clear it
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   drawSkybox();
   renderStars();
   renderPlanets();
+
+  // bind default Framebuffer and render Screenquad
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glUseProgram(m_shaders.at("quad").handle);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, frameBuffer_tex_obj_.handle);
+  int color_sampler_loc = glGetUniformLocation(m_shaders.at("quad").handle, "ColorText");
+  // use color_sampler_loc
+  glUniform1i(color_sampler_loc, 0);
+  glBindVertexArray(screenquad_object.vertex_AO);
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   
 }
 
@@ -494,6 +527,13 @@ void ApplicationSolar::initializeShaderPrograms() {
   // request uniform location for shader program
   m_shaders.at("skybox").u_locs["ProjectionMat"] = -1;
   m_shaders.at("skybox").u_locs["ViewMat"] = -1;
+
+  // stuff for screenquad
+  m_shaders.emplace("quad", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/quad.vert"},
+                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
+
+  m_shaders.at("quad").u_locs["ColorText"] = -1;
+
 }
 
 // load models
@@ -565,6 +605,80 @@ void ApplicationSolar::initializeGeometry() {
   // transfer number of indices to model object
   skybox_object.num_elements = GLsizei(skybox_model.indices.size());
 }
+
+  ////////////////////// Initialize FrameBuffer //////////////////////
+
+  void ApplicationSolar::initializeFrameBuffer() {
+    // resolution 
+    GLsizei WIDTH = 640;
+    GLsizei HEIGHT = 480;
+
+    // create Textureobject and bind it
+    glGenTextures(1, &frameBuffer_tex_obj_.handle);
+    glBindTexture(GL_TEXTURE_2D, frameBuffer_tex_obj_.handle);
+    // defining the sampling parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // define Tex-data and -format
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    // generating Renderbufferobject and binding it
+    glGenRenderbuffers(1, &rendBufferHandle);
+    glBindRenderbuffer(GL_RENDERBUFFER, rendBufferHandle);
+    // specify the properties
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, WIDTH, HEIGHT);
+
+    // generating FrameBufferobject and binding it 
+    glGenFramebuffers(1, &fboHandle);
+    glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
+    // specify Tex-object attachments
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, frameBuffer_tex_obj_.handle, 0);
+
+    // specify RenderBuffer-object attachments
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rendBufferHandle);
+
+    // create array for color attachments
+    GLenum draw_buffers[1] = {GL_COLOR_ATTACHMENT0};
+    // receive fragments
+    glDrawBuffers(1, draw_buffers);
+
+    // checking for Framebuffer status
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+      std::cout << " ------- FRAMEBUFFER NOT COMPLETE! ------- " << std::endl;
+    }
+    
+  }
+
+  //Initialize Screenquad
+  void ApplicationSolar::initializeScreenquad() {
+    // model screenquad_model = model_loader::obj(m_resource_path + "models/screenquad.obj", model::TEXCOORD);
+    
+    static const GLfloat screenquad_model[] = {
+         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,	// v1
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,	// v2
+         -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,	// v4
+         1.0f, 1.0f, 0.0f, 1.0f, 1.0f	// v3
+     };
+
+    // generating VAO and binding it 
+    glGenVertexArrays(1, &screenquad_object.vertex_AO);
+    glBindVertexArray(screenquad_object.vertex_AO);
+
+    // generating generic buffer and bind it as Vertex array buffer
+    glGenBuffers(1, &screenquad_object.vertex_BO);
+    glBindBuffer(GL_ARRAY_BUFFER, screenquad_object.vertex_BO);
+    // configuration
+    glBufferData(GL_ARRAY_BUFFER, sizeof(screenquad_model), screenquad_model, GL_STATIC_DRAW);
+
+    // activating first attribute on GPU
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, model::POSITION.components, model::POSITION.type, GL_FALSE, 5 * sizeof(float), 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, 5 * sizeof(float), (GLvoid*)(3*sizeof(float)));
+
+  }
+
 
   void ApplicationSolar::initializeSkybox() {
 

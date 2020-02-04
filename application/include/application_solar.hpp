@@ -34,6 +34,11 @@ class ApplicationSolar : public Application {
   void initializeShaderPrograms();
   void initializeGeometry();
   void initializeStarGeometry();
+
+  // need to initialize the FrameBuffer
+  void initializeFrameBuffer();
+  // and the ScreenQuad
+  void initializeScreenquad();
   // update uniform values
   void uploadUniforms();
 
@@ -56,7 +61,13 @@ class ApplicationSolar : public Application {
   model_object star_object;
   // add skybox as model
   model_object skybox_object;
-  
+  // add screenquad object
+  model_object screenquad_object;
+
+  // Handles for Framebuffer and Renderbuffer
+  GLuint fboHandle = 0;
+  GLuint rendBufferHandle = 0;
+
   // camera transform matrix
   glm::fmat4 m_view_transform;
   // camera projection matrix
@@ -72,6 +83,8 @@ class ApplicationSolar : public Application {
   std::vector<pixel_data> skybox_contain_pixdata_;
   // add skybox texture_object
   texture_object skybox_texture_obj_;
+  // texture object for framebuffer and screenquad
+  texture_object frameBuffer_tex_obj_;
 };
 
 #endif

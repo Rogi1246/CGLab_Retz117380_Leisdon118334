@@ -11,6 +11,8 @@ uniform mat4 ViewMat;
 
 out vec3 camDirection;
 
+// https://gamedev.stackexchange.com/questions/60313/implementing-a-skybox-with-glsl-version-330/60377
+
 void main() {
     mat4 inverseProj = inverse(ProjectionMat);
     mat3 inverseModView = transpose(mat3(ViewMat));
