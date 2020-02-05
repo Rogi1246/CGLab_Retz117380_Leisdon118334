@@ -24,6 +24,12 @@ using namespace gl;
 const int star_count = 2000;
 PointLightNode pointLight;
 
+bool vert = false;
+bool horizont = false;
+bool grey = false;
+bool blur = false;
+bool clear = false;
+
 //add star_object{} in here later 
 ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  :Application{resource_path}
@@ -533,7 +539,10 @@ void ApplicationSolar::initializeShaderPrograms() {
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
 
   m_shaders.at("quad").u_locs["ColorText"] = -1;
-
+  m_shaders.at("quad").u_locs["greyscale"] = -1;
+  m_shaders.at("quad").u_locs["horizontal"] = -1;
+  m_shaders.at("quad").u_locs["vertical"] = -1;
+  m_shaders.at("quad").u_locs["blur"] = -1;
 }
 
 // load models
@@ -835,6 +844,52 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     glUniform1i(m_shaders.at("planet").u_locs.at("shaderSwitch"),2);
     uploadView();
   }
+  else if (key == GLFW_KEY_7 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    glUseProgram(m_shaders.at("quad").handle);
+    if(grey == true){
+      glUniform1i(m_shaders.at("quad").u_locs.at("greyscale"),0);  
+      grey = false;
+    } else{
+      glUniform1i(m_shaders.at("quad").u_locs.at("greyscale"),1);
+      grey = true;
+    }
+    uploadView();
+  }
+  else if (key == GLFW_KEY_8 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    glUseProgram(m_shaders.at("quad").handle);
+    if(horizont == true){
+      glUniform1i(m_shaders.at("quad").u_locs.at("horizontal"),0); 
+      horizont = false; 
+    } else{
+      glUniform1i(m_shaders.at("quad").u_locs.at("horizontal"),1);
+      horizont = true;
+    }
+    uploadView();
+  }
+    else if (key == GLFW_KEY_9 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    glUseProgram(m_shaders.at("quad").handle);
+    if(vert == true){
+      glUniform1i(m_shaders.at("quad").u_locs.at("vertical"),0);  
+      vert = false;
+    } else{
+      glUniform1i(m_shaders.at("quad").u_locs.at("vertical"),1);
+      vert = true;
+    }
+    uploadView();
+  }
+    else if (key == GLFW_KEY_0 && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    glUseProgram(m_shaders.at("quad").handle);
+    if(blur == true){
+      glUniform1i(m_shaders.at("quad").u_locs.at("blur"),0);  
+      blur = false;
+    } else{
+      glUniform1i(m_shaders.at("quad").u_locs.at("blur"),1);
+      blur = true;
+    }
+    uploadView();
+  }
+
+
 
 }
 
